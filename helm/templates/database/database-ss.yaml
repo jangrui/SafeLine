@@ -36,7 +36,11 @@ spec:
       terminationGracePeriodSeconds: 120
       initContainers:
       - name: "delete-lost-found"
+        {{- if .Values.database.internal.image.registry }}
         image: {{ .Values.database.internal.image.registry}}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        {{- else }}
+        image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        {{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/bin/sh"]
         args:
@@ -53,7 +57,11 @@ spec:
             subPath: {{ $database.subPath }}
       containers:
       - name: database
+        {{- if .Values.database.internal.image.registry }}
         image: {{ .Values.database.internal.image.registry}}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        {{- else }}
+        image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        {{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
 {{- if .Values.database.internal.resources }}
         resources:

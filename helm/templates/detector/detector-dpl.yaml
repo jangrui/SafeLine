@@ -37,7 +37,11 @@ spec:
       terminationGracePeriodSeconds: 120
       initContainers:
       - name: delete-lost-found-dir
+        {{- if .Values.detector.image.registry }}
         image: {{ .Values.detector.image.registry }}/{{ .Values.detector.image.repository }}:{{ .Values.detector.image.tag }}
+        {{- else }}
+        image: {{ .Values.detector.image.repository }}:{{ .Values.detector.image.tag }}
+        {{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command:
           - sh
@@ -53,7 +57,11 @@ spec:
             subPath: detector
       containers:
       - name: detector
+        {{- if .Values.detector.image.registry }}
         image: {{ .Values.detector.image.registry }}/{{ .Values.detector.image.repository }}:{{ .Values.detector.image.tag }}
+        {{- else }}
+        image: {{ .Values.detector.image.repository }}:{{ .Values.detector.image.tag }}
+        {{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
           - name: detector-8000

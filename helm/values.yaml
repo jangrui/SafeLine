@@ -76,7 +76,7 @@ database:
     serviceAccountName: ""
     automountServiceAccountToken: false
     image:
-      registry: uhub.service.ucloud.cn/silkdo/library
+      registry: ''
       repository: postgres
       tag: 15.2
     password: changeit
@@ -123,7 +123,7 @@ redis:
     serviceAccountName: ""
     automountServiceAccountToken: false
     image:
-      registry: uhub.service.ucloud.cn/silkdo/library
+      registry: ''
       repository: redis
       tag: 7.0.10
     resources:
@@ -149,7 +149,7 @@ redis:
 
 management:
   image:
-    registry: uhub.service.ucloud.cn/silkdo
+    registry: ''
     repository: chaitin/safeline-mgt-api
     tag: 3.2.0
   service:
@@ -178,7 +178,7 @@ management:
 
 detector:
   image:
-    registry: uhub.service.ucloud.cn/silkdo
+    registry: ''
     repository: chaitin/safeline-detector
     tag: 3.2.0
   resources:
@@ -203,7 +203,7 @@ detector:
 
 mario:
   image:
-    registry: uhub.service.ucloud.cn/silkdo
+    registry: ''
     repository: chaitin/safeline-mario
     tag: 3.2.0
   resources:
@@ -228,7 +228,7 @@ mario:
 
 tengine:
   image:
-    registry: uhub.service.ucloud.cn/silkdo
+    registry: ''
     repository: chaitin/safeline-tengine
     tag: 3.2.0
   resources:
