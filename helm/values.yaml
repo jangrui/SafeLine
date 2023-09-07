@@ -6,7 +6,7 @@ imagePullPolicy: IfNotPresent
 
 global:
   image:
-    registry: ''
+    registry: uhub.service.ucloud.cn/silkdo
 
 strategy:
   type: RollingUpdate
