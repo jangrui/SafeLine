@@ -36,8 +36,8 @@ spec:
       terminationGracePeriodSeconds: 120
       initContainers:
       - name: "delete-lost-found"
-        {{- if .Values.database.internal.image.registry }}
-        image: {{ .Values.database.internal.image.registry}}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        {{- if .Values.global.image.registry }}
+        image: {{ .Values.global.image.registry}}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         {{- else }}
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         {{- end }}
@@ -57,8 +57,8 @@ spec:
             subPath: {{ $database.subPath }}
       containers:
       - name: database
-        {{- if .Values.database.internal.image.registry }}
-        image: {{ .Values.database.internal.image.registry}}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        {{- if .Values.global.image.registry }}
+        image: {{ .Values.global.image.registry}}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         {{- else }}
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
         {{- end }}

@@ -37,8 +37,8 @@ spec:
       terminationGracePeriodSeconds: 120
       initContainers:
       - name: delete-lost-found-dir
-        {{- if .Values.mario.image.registry }}
-        image: {{ .Values.mario.image.registry }}/{{ .Values.mario.image.repository }}:{{ .Values.mario.image.tag }}
+        {{- if .Values.global.image.registry }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.mario.image.repository }}:{{ .Values.mario.image.tag }}
         {{- else }}
         image: {{ .Values.mario.image.repository }}:{{ .Values.mario.image.tag }}
         {{- end }}
@@ -57,8 +57,8 @@ spec:
             subPath: mario
       containers:
       - name: mario
-        {{- if .Values.mario.image.registry }}
-        image: {{ .Values.mario.image.registry }}/{{ .Values.mario.image.repository }}:{{ .Values.mario.image.tag }}
+        {{- if .Values.global.image.registry }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.mario.image.repository }}:{{ .Values.mario.image.tag }}
         {{- else }}
         image: {{ .Values.mario.image.repository }}:{{ .Values.mario.image.tag }}
         {{- end }}

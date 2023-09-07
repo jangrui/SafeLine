@@ -37,8 +37,8 @@ spec:
       terminationGracePeriodSeconds: 120
       initContainers:
       - name: delete-lost-found-dir
-        {{- if .Values.tengine.image.registry }}
-        image: {{ .Values.tengine.image.registry }}/{{ .Values.tengine.image.repository }}:{{ .Values.tengine.image.tag }}
+        {{- if .Values.global.image.registry }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.tengine.image.repository }}:{{ .Values.tengine.image.tag }}
         {{- else }}
         image: {{ .Values.tengine.image.repository }}:{{ .Values.tengine.image.tag }}
         {{- end }}
@@ -66,8 +66,8 @@ spec:
             name: cache
       containers:
       - name: tengine
-        {{- if .Values.tengine.image.registry }}
-        image: {{ .Values.tengine.image.registry }}/{{ .Values.tengine.image.repository }}:{{ .Values.tengine.image.tag }}
+        {{- if .Values.global.image.registry }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.tengine.image.repository }}:{{ .Values.tengine.image.tag }}
         {{- else }}
         image: {{ .Values.tengine.image.repository }}:{{ .Values.tengine.image.tag }}
         {{- end }}

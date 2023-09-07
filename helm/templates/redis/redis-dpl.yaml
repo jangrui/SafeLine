@@ -1,7 +1,6 @@
 {{- if eq .Values.redis.type "internal" -}}
-{{- $redis := .Values.persistence.persistentVolumeClaim.redis -}}
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ template "safeline.redis" . }}
   labels:
@@ -24,9 +23,6 @@ spec:
 {{ toYaml .Values.redis.podAnnotations | indent 8 }}
 {{- end }}
     spec:
-      securityContext:
-        runAsUser: 999
-        fsGroup: 999
 {{- if .Values.redis.internal.serviceAccountName }}
       serviceAccountName: {{ .Values.redis.internal.serviceAccountName }}
 {{- end -}}
@@ -38,8 +34,8 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: redis
-        {{- if .Values.redis.internal.image.registry }}
-        image: {{ .Values.redis.internal.image.registry }}/{{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
+        {{- if .Values.global.image.registry }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
         {{- else }}
         image: {{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
         {{- end }}
@@ -69,19 +65,6 @@ spec:
           - -c
           - |
             redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
-        volumeMounts:
-        - name: data
-          mountPath: /var/lib/redis
-      {{- if not .Values.persistence.enabled }}
-      volumes:
-      - name: data
-        emptyDir: {}
-      {{- else if $redis.existingClaim }}
-      volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: {{ $redis.existingClaim }}
-      {{- end -}}
     {{- with .Values.redis.internal.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -97,27 +80,4 @@ spec:
     {{- if .Values.redis.internal.priorityClassName }}
       priorityClassName: {{ .Values.redis.internal.priorityClassName }}
     {{- end }}
-  {{- if and .Values.persistence.enabled (not $redis.existingClaim) }}
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-      labels:
-{{ include "safeline.labels" . | indent 8 }}
-      annotations:
-      {{- range $key, $value := $redis.annotations }}
-        {{ $key }}: {{ $value | quote }}
-      {{- end }}
-    spec:
-      accessModes: [{{ $redis.accessMode | quote }}]
-      {{- if $redis.storageClass }}
-      {{- if (eq "-" $redis.storageClass) }}
-      storageClassName: ""
-      {{- else }}
-      storageClassName: "{{ $redis.storageClass }}"
-      {{- end }}
-      {{- end }}
-      resources:
-        requests:
-          storage: {{ $redis.size | quote }}
-  {{- end -}}
   {{- end -}}

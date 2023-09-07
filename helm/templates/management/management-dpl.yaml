@@ -37,8 +37,8 @@ spec:
       terminationGracePeriodSeconds: 120
       initContainers:
       - name: delete-lost-found-dir
-        {{- if .Values.management.image.registry }}
-        image: {{ .Values.management.image.registry }}/{{ .Values.management.image.repository }}:{{ .Values.management.image.tag }}
+        {{- if .Values.global.image.registry }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.management.image.repository }}:{{ .Values.management.image.tag }}
         {{- else }}
         image: {{ .Values.management.image.repository }}:{{ .Values.management.image.tag }}
         {{- end }}
@@ -60,8 +60,8 @@ spec:
             subPath: management
       containers:
       - name: management
-        {{- if .Values.management.image.registry }}
-        image: {{ .Values.management.image.registry }}/{{ .Values.management.image.repository }}:{{ .Values.management.image.tag }}
+        {{- if .Values.global.image.registry }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.management.image.repository }}:{{ .Values.management.image.tag }}
         {{- else }}
         image: {{ .Values.management.image.repository }}:{{ .Values.management.image.tag }}
         {{- end }}

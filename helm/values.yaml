@@ -4,6 +4,10 @@ fullnameOverride: ""
 imagePullSecrets: []
 imagePullPolicy: IfNotPresent
 
+global:
+  image:
+    registry: ''
+
 strategy:
   type: RollingUpdate
   rollingUpdate:
@@ -16,14 +20,7 @@ persistence:
   persistentVolumeClaim:
     database:
       existingClaim: ""
-      storageClass: ""
-      accessMode: ReadWriteOnce
-      size: 1Gi
-      annotations: {}
-
-    redis:
-      existingClaim: ""
-      storageClass: ""
+      storageClass: "longhorn"
       accessMode: ReadWriteOnce
       size: 1Gi
       annotations: {}
