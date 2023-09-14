@@ -148,7 +148,7 @@ management:
   image:
     registry: ''
     repository: chaitin/safeline-mgt-api
-    tag: 3.3.0
+    tag: 3.4.0
   service:
     type: NodePort
     web:
@@ -177,7 +177,7 @@ detector:
   image:
     registry: ''
     repository: chaitin/safeline-detector
-    tag: 3.3.0
+    tag: 3.4.0
   resources:
   #   limits:
   #     cpu: 1000m
@@ -202,7 +202,7 @@ mario:
   image:
     registry: ''
     repository: chaitin/safeline-mario
-    tag: 3.3.0
+    tag: 3.4.0
   resources:
   #   limits:
   #     cpu: 1000m
@@ -227,7 +227,7 @@ tengine:
   image:
     registry: ''
     repository: chaitin/safeline-tengine
-    tag: 3.3.0
+    tag: 3.4.0
   resources:
   #   limits:
   #     cpu: 1000m
