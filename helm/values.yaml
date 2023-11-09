@@ -128,7 +128,6 @@ redis:
     #  requests:
     #    memory: 256Mi
     #    cpu: 100m
-    password: changeit
     nodeSelector: {}
     tolerations: []
     affinity: {}

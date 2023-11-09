@@ -111,22 +111,6 @@ postgres://{{ template "safeline.database.username" . }}:{{ template "safeline.d
   {{- printf "%s-redis" (include "safeline.fullname" .) -}}
 {{- end -}}
 
-{{- define "safeline.redis.rawPassword" -}}
-  {{- if eq .Values.redis.type "internal" -}}
-    {{- .Values.redis.internal.password -}}
-  {{- else -}}
-    {{- .Values.redis.external.password -}}
-  {{- end -}}
-{{- end -}}
-
-{{- define "safeline.redis.escapedRawPassword" -}}
-  {{- include "safeline.redis.rawPassword" . | urlquery | replace "+" "%20" -}}
-{{- end -}}
-
-{{- define "safeline.redis.encryptedPassword" -}}
-  {{- include "safeline.redis.rawPassword" . | b64enc | quote -}}
-{{- end -}}
-
 {{- define "safeline.redis.scheme" -}}
   {{- with .Values.redis }}
     {{- ternary "redis+sentinel" "redis"  (and (eq .type "external" ) (not (not .external.sentinelMasterSet))) }}
@@ -152,12 +136,26 @@ postgres://{{ template "safeline.database.username" . }}:{{ template "safeline.d
   {{- end }}
 {{- end -}}
 
+
+{{- define "safeline.redis.pwdfromsecret" -}}
+  {{- (lookup "v1" "Secret"  .Release.Namespace (.Values.redis.external.existingSecret)).data.REDIS_PASSWORD  | b64dec }}
+{{- end -}}
+
+{{- define "safeline.redis.cred" -}}
+  {{- with .Values.redis }}
+    {{- if (and (eq .type "external" ) (.external.existingSecret)) }}
+      {{- printf ":%s@" (include "safeline.redis.pwdfromsecret" $) }}
+    {{- else }}
+      {{- ternary (printf "%s:%s@" (.external.username | urlquery) (.external.password | urlquery)) "" (and (eq .type "external" ) (not (not .external.password))) }}
+    {{- end }}
+  {{- end }}
+{{- end -}}
+
 /*scheme://[:password@]host:port[/master_set]*/
 {{- define "safeline.redis.url" -}}
   {{- with .Values.redis }}
     {{- $path := ternary "" (printf "/%s" (include "safeline.redis.masterSet" $)) (not (include "safeline.redis.masterSet" $)) }}
-    {{- $cred := ternary (printf "%s:%s@" (.external.username | urlquery) (.external.password | urlquery)) "" (and (eq .type "external" ) (not (not .external.password))) }}
-    {{- printf "%s://%s%s%s" (include "safeline.redis.scheme" $) $cred (include "safeline.redis.addr" $) $path -}}
+    {{- printf "%s://%s%s%s" (include "safeline.redis.scheme" $) (include "safeline.redis.cred" $) (include "safeline.redis.addr" $) $path -}}
   {{- end }}
 {{- end -}}
 
@@ -172,7 +170,7 @@ postgres://{{ template "safeline.database.username" . }}:{{ template "safeline.d
 /*scheme://[:password@]addr/db_index*/
 {{- define "safeline.redis.urlForJobservice" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary "1" .external.jobserviceDatabaseIndex (eq .type "internal") }}
+    {{- $index := ternary .internal.jobserviceDatabaseIndex .external.jobserviceDatabaseIndex (eq .type "internal") }}
     {{- printf "%s/%s" (include "safeline.redis.url" $) $index -}}
   {{- end }}
 {{- end -}}
@@ -180,7 +178,7 @@ postgres://{{ template "safeline.database.username" . }}:{{ template "safeline.d
 /*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
 {{- define "safeline.redis.urlForRegistry" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary "2" .external.registryDatabaseIndex (eq .type "internal") }}
+    {{- $index := ternary .internal.registryDatabaseIndex .external.registryDatabaseIndex (eq .type "internal") }}
     {{- printf "%s/%s?idle_timeout_seconds=30" (include "safeline.redis.url" $) $index -}}
   {{- end }}
 {{- end -}}
@@ -188,14 +186,30 @@ postgres://{{ template "safeline.database.username" . }}:{{ template "safeline.d
 /*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
 {{- define "safeline.redis.urlForTrivy" -}}
   {{- with .Values.redis }}
-    {{- $index := ternary "5" .external.trivyAdapterIndex (eq .type "internal") }}
+    {{- $index := ternary .internal.trivyAdapterIndex .external.trivyAdapterIndex (eq .type "internal") }}
+    {{- printf "%s/%s?idle_timeout_seconds=30" (include "safeline.redis.url" $) $index -}}
+  {{- end }}
+{{- end -}}
+
+/*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
+{{- define "safeline.redis.urlForsafeline" -}}
+  {{- with .Values.redis }}
+    {{- $index := ternary .internal.safelineDatabaseIndex .external.safelineDatabaseIndex (eq .type "internal") }}
+    {{- printf "%s/%s?idle_timeout_seconds=30" (include "safeline.redis.url" $) $index -}}
+  {{- end }}
+{{- end -}}
+
+/*scheme://[:password@]addr/db_index?idle_timeout_seconds=30*/
+{{- define "safeline.redis.urlForCache" -}}
+  {{- with .Values.redis }}
+    {{- $index := ternary .internal.cacheLayerDatabaseIndex .external.cacheLayerDatabaseIndex (eq .type "internal") }}
     {{- printf "%s/%s?idle_timeout_seconds=30" (include "safeline.redis.url" $) $index -}}
   {{- end }}
 {{- end -}}
 
 {{- define "safeline.redis.dbForRegistry" -}}
   {{- with .Values.redis }}
-    {{- ternary "2" .external.registryDatabaseIndex (eq .type "internal") }}
+    {{- ternary .internal.registryDatabaseIndex .external.registryDatabaseIndex (eq .type "internal") }}
   {{- end }}
 {{- end -}}
 

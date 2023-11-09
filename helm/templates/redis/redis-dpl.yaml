@@ -53,17 +53,9 @@ spec:
         resources:
 {{ toYaml .Values.redis.internal.resources | indent 10 }}
 {{- end }}
-        envFrom:
-          - secretRef:
-              name: "{{ template "safeline.redis" . }}"
         env:
           - name: TZ
             value: Asia/Shanghai
-        command:
-          - sh
-          - -c
-          - |
-            redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
     {{- with .Values.redis.internal.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
