@@ -37,10 +37,16 @@ spec:
       terminationGracePeriodSeconds: 120
       initContainers:
       - name: delete-lost-found-dir
-        {{- if .Values.global.image.registry }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.management.image.repository }}:{{ .Values.management.image.tag }}
-        {{- else }}
+        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.management.image.repository }}:{{ .Chart.AppVersion }}
+        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.management.image.repository }}:{{ .Values.global.image.tag }}
+        {{- else if .Values.management.image.registry .Values.management.image.repository .Values.management.image.tag }}
+        image: {{ .Values.management.image.registry }}/{{ .Values.management.image.repository }}:{{ .Values.management.image.tag }}
+        {{- else if and .Values.management.image.repository .Values.management.image.tag (not .Values.management.image.registry) }}
         image: {{ .Values.management.image.repository }}:{{ .Values.management.image.tag }}
+        {{- else if and .Values.management.image.repository (not .Values.management.image.tag) (not .Values.management.image.registry) }}
+        image: {{ .Values.management.image.repository }}:{{ .Chart.AppVersion }}
         {{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command:
@@ -60,10 +66,16 @@ spec:
             subPath: management
       containers:
       - name: management
-        {{- if .Values.global.image.registry }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.management.image.repository }}:{{ .Values.management.image.tag }}
-        {{- else }}
+        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.management.image.repository }}:{{ .Chart.AppVersion }}
+        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.management.image.repository }}:{{ .Values.global.image.tag }}
+        {{- else if .Values.management.image.registry .Values.management.image.repository .Values.management.image.tag }}
+        image: {{ .Values.management.image.registry }}/{{ .Values.management.image.repository }}:{{ .Values.management.image.tag }}
+        {{- else if and .Values.management.image.repository .Values.management.image.tag (not .Values.management.image.registry) }}
         image: {{ .Values.management.image.repository }}:{{ .Values.management.image.tag }}
+        {{- else if and .Values.management.image.repository (not .Values.management.image.tag) (not .Values.management.image.registry) }}
+        image: {{ .Values.management.image.repository }}:{{ .Chart.AppVersion }}
         {{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:

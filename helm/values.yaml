@@ -6,7 +6,8 @@ imagePullPolicy: IfNotPresent
 
 global:
   image:
-    registry: uhub.service.ucloud.cn/silkdo
+    registry: ""
+    tag: ""
 
 strategy:
   type: RollingUpdate
@@ -148,7 +149,7 @@ management:
   image:
     registry: ''
     repository: chaitin/safeline-mgt-api
-    tag: 3.5.0
+    tag: ""
   service:
     type: NodePort
     web:
@@ -177,7 +178,7 @@ detector:
   image:
     registry: ''
     repository: chaitin/safeline-detector
-    tag: 3.5.0
+    tag: ""
   resources:
   #   limits:
   #     cpu: 1000m
@@ -202,7 +203,7 @@ mario:
   image:
     registry: ''
     repository: chaitin/safeline-mario
-    tag: 3.5.0
+    tag: ""
   resources:
   #   limits:
   #     cpu: 1000m
@@ -227,7 +228,7 @@ tengine:
   image:
     registry: ''
     repository: chaitin/safeline-tengine
-    tag: 3.5.0
+    tag: ""
   resources:
   #   limits:
   #     cpu: 1000m
