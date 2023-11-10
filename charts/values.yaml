@@ -21,7 +21,7 @@ persistence:
   persistentVolumeClaim:
     database:
       existingClaim: ""
-      storageClass: "longhorn"
+      storageClass: ""
       accessMode: ReadWriteOnce
       size: 1Gi
       annotations: {}
@@ -103,10 +103,10 @@ database:
       #    memory: 128Mi
       #    cpu: 100m
   external:
-    host: "192.168.0.1"
-    port: "5432"
-    username: "user"
-    password: "password"
+    host: ""
+    port: ""
+    username: ""
+    password: ""
     coreDatabase: "safeline-ce"
     dbname: "safeline-ce"
     existingSecret: ""
@@ -133,7 +133,8 @@ redis:
     affinity: {}
     priorityClassName:
   external:
-    addr: "192.168.0.2:6379"
+    # addr: "192.168.0.2:6379"
+    addr: ""
     sentinelMasterSet: ""
     coreDatabaseIndex: "0"
     jobserviceDatabaseIndex: "1"
