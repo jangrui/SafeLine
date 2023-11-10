@@ -22,6 +22,6 @@ entries:
     - https://github.com/chaitin/safeline
     - https://github.com/jangrui/safeline-helm
     urls:
-    - https://github.com/jangrui/SafeLine/releases/download/safeline-3.10.1/safeline-3.10.1.tgz
+    - https://github.com/jangrui/SafeLine/releases/download/3.10.1/safeline-3.10.1.tgz
     version: 3.10.1
 generated: "2023-11-11T01:28:34.480292+08:00"
