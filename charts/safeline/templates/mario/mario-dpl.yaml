@@ -87,8 +87,6 @@ spec:
             value: "100"
           - name: DATABASE_URL
             value: {{ template "safeline.database.url" . }}
-          - name: REDIS_URL
-            value: {{ template "safeline.redis.url" . }}
         volumeMounts:
           - name: localtime
             mountPath: /etc/localtime

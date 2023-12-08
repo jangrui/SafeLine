@@ -94,10 +94,8 @@ spec:
             value: {{ template "safeline.database.url" . }}
           - name: MARIO_URL
             value: {{ template "safeline.mario.url" . }}
-          - name: DETECTOR_URL
-            value: http://{{ template "safeline.detector" . }}:{{ template "safeline.detector.detector8001.port" . }}
-          - name: REDIS_URL
-            value: {{ template "safeline.redis.url" . }}
+          - name: FVM_MANAGER_URL
+            value: {{ template "safeline.fvm" . }}:{{ template "safeline.fvm.manager.port" . }}
           - name: MANAGEMENT_LOGS_DIR
             value: /logs/management
         volumeMounts:
@@ -129,7 +127,6 @@ spec:
         - name: logs
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.persistentVolumeClaim.logs.existingClaim | default (include "safeline.logs" .) }}
-
         {{- else -}}
         - name: management
           emptyDir: {}

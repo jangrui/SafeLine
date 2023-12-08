@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "safeline.fvm" . }}"
+  labels:
+{{ include "safeline.labels" . | indent 4 }}
+spec:
+{{- if or (eq .Values.fvm.service.type "NodePort") (eq .Values.fvm.service.type "LoadBalancer") }}
+  type: NodePort
+{{- end }}
+  ports:
+    - name: fvm
+      protocol: TCP
+      port: {{ template "safeline.fvm.manager.port" . }}
+  selector:
+{{ include "safeline.matchLabels" . | indent 4 }}
+    component: fvm

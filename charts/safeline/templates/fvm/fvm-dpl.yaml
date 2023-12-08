@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "safeline.fvm" . }}
+  labels:
+{{ include "safeline.labels" . | indent 4 }}
+    component: fvm
+spec:
+  replicas: {{ .Values.fvm.replicas }}
+  revisionHistoryLimit: {{ .Values.fvm.revisionHistoryLimit }}
+  strategy:
+{{- if .Values.strategy }}
+{{ toYaml .Values.strategy | indent 4 }}
+{{- end }}
+  selector:
+    matchLabels:
+{{ include "safeline.matchLabels" . | indent 6 }}
+      component: fvm
+  template:
+    metadata:
+      labels:
+{{ include "safeline.matchLabels" . | indent 8 }}
+        component: fvm
+      annotations:
+{{- if .Values.fvm.podAnnotations }}
+{{ toYaml .Values.fvm.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+{{- if .Values.fvm.serviceAccountName }}
+      serviceAccountName: {{ .Values.fvm.serviceAccountName }}
+{{- end -}}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.fvm.automountServiceAccountToken | default false }}
+      terminationGracePeriodSeconds: 120
+      containers:
+      - name: fvm
+        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.fvm.image.repository }}:{{ .Chart.AppVersion }}
+        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.fvm.image.repository }}:{{ .Values.global.image.tag }}
+        {{- else if .Values.fvm.image.registry .Values.fvm.image.repository .Values.fvm.image.tag }}
+        image: {{ .Values.fvm.image.registry }}/{{ .Values.fvm.image.repository }}:{{ .Values.fvm.image.tag }}
+        {{- else if and .Values.fvm.image.repository .Values.fvm.image.tag (not .Values.fvm.image.registry) }}
+        image: {{ .Values.fvm.image.repository }}:{{ .Values.fvm.image.tag }}
+        {{- else if and .Values.fvm.image.repository (not .Values.fvm.image.tag) (not .Values.fvm.image.registry) }}
+        image: {{ .Values.fvm.image.repository }}:{{ .Chart.AppVersion }}
+        {{- end }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        ports:
+          - name: manager
+            containerPort: {{ template "safeline.fvm.manager.port" . }}
+        env:
+          - name: FVM_LOGS_DIR
+            value: /logs/management
+          - name: DETECTOR_URL
+            value: http://{{ template "safeline.detector" . }}:{{ template "safeline.detector.detector8001.port" . }}
+        volumeMounts:
+          - name: localtime
+            mountPath: /etc/localtime
+            readOnly: true
+          - mountPath: /logs
+            name: logs
+{{- if .Values.fvm.resources }}
+        resources:
+{{ toYaml .Values.fvm.resources | indent 10 }}
+{{- end }}
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+        {{- if .Values.persistence.enabled }}
+        - name: logs
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.persistentVolumeClaim.logs.existingClaim | default (include "safeline.logs" .) }}
+        {{- else -}}
+        - name: fvm
+          emptyDir: {}
+        - name: logs
+          emptyDir: {}
+        {{- end -}}
+
+    {{- with .Values.fvm.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.fvm.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.fvm.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if .Values.fvm.priorityClassName }}
+      priorityClassName: {{ .Values.fvm.priorityClassName }}
+    {{- end }}

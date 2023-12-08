@@ -92,10 +92,8 @@ spec:
           - name: https
             containerPort: {{ template "safeline.tengine.https.port" . }}
         env:
-          - name: REDIS_URL
-            value: {{ template "safeline.redis.url" . }}
-          - name: MGT_ADDR
-            value: {{ template "safeline.management" . }}:{{ template "safeline.management.controller.port" . }}
+          - name: MGT_API
+            value: {{ template "safeline.management.url" . }}
         volumeMounts:
           - name: localtime
             mountPath: /etc/localtime
