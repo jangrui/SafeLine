@@ -1,0 +1,123 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "safeline.mgt" . }}
+  labels:
+{{ include "safeline.labels" . | indent 4 }}
+    component: mgt
+spec:
+  replicas: {{ .Values.mgt.replicas }}
+  revisionHistoryLimit: {{ .Values.mgt.revisionHistoryLimit }}
+  strategy:
+{{- if .Values.strategy }}
+{{ toYaml .Values.strategy | indent 4 }}
+{{- end }}
+  selector:
+    matchLabels:
+{{ include "safeline.matchLabels" . | indent 6 }}
+      component: mgt
+  template:
+    metadata:
+      labels:
+{{ include "safeline.matchLabels" . | indent 8 }}
+        component: mgt
+      annotations:
+{{- if .Values.mgt.podAnnotations }}
+{{ toYaml .Values.mgt.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+{{- if .Values.mgt.serviceAccountName }}
+      serviceAccountName: {{ .Values.mgt.serviceAccountName }}
+{{- end -}}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.mgt.automountServiceAccountToken | default false }}
+      terminationGracePeriodSeconds: 120
+      initContainers:
+      - name: delete-lost-found-dir
+        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.mgt.image.repository }}:{{ .Chart.AppVersion }}
+        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.mgt.image.repository }}:{{ .Values.global.image.tag }}
+        {{- else if .Values.mgt.image.registry .Values.mgt.image.repository .Values.mgt.image.tag }}
+        image: {{ .Values.mgt.image.registry }}/{{ .Values.mgt.image.repository }}:{{ .Values.mgt.image.tag }}
+        {{- else if and .Values.mgt.image.repository .Values.mgt.image.tag (not .Values.mgt.image.registry) }}
+        image: {{ .Values.mgt.image.repository }}:{{ .Values.mgt.image.tag }}
+        {{- else if and .Values.mgt.image.repository (not .Values.mgt.image.tag) (not .Values.mgt.image.registry) }}
+        image: {{ .Values.mgt.image.repository }}:{{ .Chart.AppVersion }}
+        {{- end }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command:
+          - sh
+          - -c
+          - |-
+            rm -rf /app/data/lost+found
+        volumeMounts:
+          - mountPath: /app/data
+            name: mgt
+      containers:
+      - name: mgt
+        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.mgt.image.repository }}:{{ .Chart.AppVersion }}
+        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.mgt.image.repository }}:{{ .Values.global.image.tag }}
+        {{- else if .Values.mgt.image.registry .Values.mgt.image.repository .Values.mgt.image.tag }}
+        image: {{ .Values.mgt.image.registry }}/{{ .Values.mgt.image.repository }}:{{ .Values.mgt.image.tag }}
+        {{- else if and .Values.mgt.image.repository .Values.mgt.image.tag (not .Values.mgt.image.registry) }}
+        image: {{ .Values.mgt.image.repository }}:{{ .Values.mgt.image.tag }}
+        {{- else if and .Values.mgt.image.repository (not .Values.mgt.image.tag) (not .Values.mgt.image.registry) }}
+        image: {{ .Values.mgt.image.repository }}:{{ .Chart.AppVersion }}
+        {{- end }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        ports:
+          - name: web
+            containerPort: {{ template "safeline.mgt.web.port" . }}
+          - name: api
+            containerPort: {{ template "safeline.mgt.api.port" . }}
+          - name: tcd
+            containerPort: {{ template "safeline.mgt.tcd.port" . }}
+        env:
+          - name: MGT_PG
+            value: {{ template "safeline.database.url" . }}
+          - name: MGT_LICENSE_SERVER
+            value: https://safeline-ce-4463.rivers.chaitin.cn/
+        volumeMounts:
+          - mountPath: /app/data
+            name: mgt
+          - name: localtime
+            mountPath: /etc/localtime
+            readOnly: true
+{{- if .Values.mgt.resources }}
+        resources:
+{{ toYaml .Values.mgt.resources | indent 10 }}
+{{- end }}
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+        {{- if .Values.persistence.enabled }}
+        - name: mgt
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.persistentVolumeClaim.mgt.existingClaim | default (include "safeline.mgt" .) }}
+        {{- else -}}
+        - name: mgt
+          emptyDir: {}
+        {{- end -}}
+
+    {{- with .Values.mgt.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.mgt.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.mgt.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- if .Values.mgt.priorityClassName }}
+      priorityClassName: {{ .Values.mgt.priorityClassName }}
+    {{- end }}

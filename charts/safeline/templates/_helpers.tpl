@@ -38,7 +38,7 @@ app: "{{ template "safeline.name" . }}"
 
 {{- define "safeline.database.host" -}}
   {{- if eq .Values.database.type "internal" -}}
-    {{- printf "%s" "safeline-postgres" }}
+    {{- printf "%s" "safeline-pg" }}
   {{- else -}}
     {{- .Values.database.external.host -}}
   {{- end -}}
@@ -102,7 +102,7 @@ app: "{{ template "safeline.name" . }}"
 {{- end -}}
 
 {{- define "safeline.database.url" -}}
-postgres://{{ template "safeline.database.username" . }}:{{ template "safeline.database.escapedRawPassword" . }}@{{ template "safeline.database.host" . }}:{{ template "safeline.database.port" . }}/{{ template "safeline.database.dbname" . }}
+postgres://{{ template "safeline.database.username" . }}:{{ template "safeline.database.escapedRawPassword" . }}@{{ template "safeline.database.host" . }}:{{ template "safeline.database.port" . }}/{{ template "safeline.database.dbname" . }}?sslmode={{ template "safeline.database.sslmode" . }}
 {{- end -}}
 
 
@@ -111,74 +111,66 @@ postgres://{{ template "safeline.database.username" . }}:{{ template "safeline.d
   {{- printf "%s-logs" (include "safeline.fullname" .) -}}
 {{- end -}}
 
+
 {{/* nginx */}}
 {{- define "safeline.nginx" -}}
   {{- printf "%s-nginx" (include "safeline.fullname" .) -}}
 {{- end -}}
 
-{{/* management */}}
-{{- define "safeline.management" -}}
-  {{- printf "%s-mgt-api" (include "safeline.fullname" .) -}}
+
+{{/* mgt */}}
+{{- define "safeline.mgt" -}}
+  {{- printf "%s-mgt" (include "safeline.fullname" .) -}}
 {{- end -}}
 
-{{- define "safeline.management.web.port" -}}
+{{- define "safeline.mgt.api.port" -}}
+    {{- printf "80" -}}
+{{- end -}}
+
+{{- define "safeline.mgt.web.port" -}}
     {{- printf "1443" -}}
 {{- end -}}
 
-{{- define "safeline.management.middle.port" -}}
-    {{- printf "1080" -}}
+{{- define "safeline.mgt.tcd.port" -}}
+    {{- printf "8000" -}}
 {{- end -}}
 
-{{- define "safeline.management.controller.port" -}}
-    {{- printf "9002" -}}
+{{- define "safeline.mgt.api" -}}
+https://{{ template "safeline.mgt" . }}:{{ template "safeline.mgt.web.port" . }}/api/open/publish/server
 {{- end -}}
 
-{{- define "safeline.management.url" -}}
-https://{{ template "safeline.management" . }}:{{ template "safeline.management.web.port" . }}/api/publish/server
+{{- define "safeline.mgt.tcd" -}}
+  {{ template "safeline.mgt" . }}:{{ template "safeline.mgt.tcd.port" . }}
 {{- end -}}
 
-{{/* fvm */}}
-{{- define "safeline.fvm" -}}
-  {{- printf "%s-fvm" (include "safeline.fullname" .) -}}
-{{- end -}}
-
-{{- define "safeline.fvm.manager.port" -}}
-    {{- printf "9004" -}}
-{{- end -}}
-
-{{- define "safeline.fvm.url" -}}
-    {{ template "safeline.fvm" . }}:{{ template "safeline.fvm.manager.port" . }}
-{{- end -}}
 
 {{/* detector */}}
 {{- define "safeline.detector" -}}
   {{- printf "%s-detector" (include "safeline.fullname" .) -}}
 {{- end -}}
 
-{{- define "safeline.detector.detector8000.port" -}}
-    {{- printf "8000" -}}
-{{- end -}}
-
-{{- define "safeline.detector.detector8001.port" -}}
+{{- define "safeline.detector.port" -}}
     {{- printf "8001" -}}
 {{- end -}}
+
+{{- define "safeline.detector.url" -}}
+    {{ template "safeline.detector" . }}:{{ template "safeline.detector.port" . }}
+{{- end -}}
+
 
 {{/* mario */}}
 {{- define "safeline.mario" -}}
   {{- printf "%s-mario" (include "safeline.fullname" .) -}}
 {{- end -}}
 
-{{- define "safeline.mario.mario.port" -}}
-    {{- printf "9443" -}}
-{{- end -}}
-
-{{- define "safeline.mario.weblog.port" -}}
+{{- define "safeline.mario.port" -}}
     {{- printf "3335" -}}
 {{- end -}}
 
 {{- define "safeline.mario.url" -}}
-http://{{ template "safeline.mario" . }}:{{ template "safeline.mario.weblog.port" . }}
+http://{{ template "safeline.mario" . }}:{{ template "safeline.mario.port" . }}
 {{- end -}}
+
 
 {{/* tengine */}}
 {{- define "safeline.tengine" -}}
@@ -193,6 +185,26 @@ http://{{ template "safeline.mario" . }}:{{ template "safeline.mario.weblog.port
     {{- printf "80" -}}
 {{- end -}}
 
-{{- define "safeline.tengine.https.port" -}}
-    {{- printf "443" -}}
+
+{{/* fvm */}}
+{{- define "safeline.fvm" -}}
+  {{- printf "%s-fvm" (include "safeline.fullname" .) -}}
+{{- end -}}
+
+{{- define "safeline.fvm.api.port" -}}
+    {{- printf "9004" -}}
+{{- end -}}
+
+{{- define "safeline.fvm.web.port" -}}
+    {{- printf "80" -}}
+{{- end -}}
+
+
+{{/* luigi */}}
+{{- define "safeline.luigi" -}}
+  {{- printf "%s-luigi" (include "safeline.fullname" .) -}}
+{{- end -}}
+
+{{- define "safeline.luigi.port" -}}
+    {{- printf "80" -}}
 {{- end -}}

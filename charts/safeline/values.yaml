@@ -6,7 +6,7 @@ imagePullPolicy: IfNotPresent
 
 global:
   image:
-    registry: ""
+    registry: swr.cn-east-3.myhuaweicloud.com/chaitin-safeline
     tag: ""
 
 strategy:
@@ -40,7 +40,7 @@ persistence:
       size: 1Gi
       annotations: {}
 
-    management:
+    mgt:
       existingClaim: ""
       storageClass: ""
       accessMode: ReadWriteMany
@@ -57,14 +57,21 @@ persistence:
     mario:
       existingClaim: ""
       storageClass: ""
-      accessMode: ReadWriteOnce
+      accessMode: ReadWriteMany
       size: 1Gi
       annotations: {}
 
     tengine:
       existingClaim: ""
       storageClass: ""
-      accessMode: ReadWriteOnce
+      accessMode: ReadWriteMany
+      size: 1Gi
+      annotations: {}
+
+    luigi:
+      existingClaim: ""
+      storageClass: ""
+      accessMode: ReadWriteMany
       size: 1Gi
       annotations: {}
 
@@ -145,15 +152,15 @@ redis:
     existingSecret: ""
   podAnnotations: {}
 
-management:
+mgt:
   image:
     registry: ''
-    repository: chaitin/safeline-mgt-api
+    repository: safeline-mgt
     tag: ""
   service:
     type: NodePort
     web:
-      nodePort: 31443
+      nodePort: 31445
   resources:
   #   limits:
   #     cpu: 1000m
@@ -177,7 +184,7 @@ management:
 fvm:
   image:
     registry: ''
-    repository: chaitin/safeline-fvm-manager
+    repository: safeline-fvm
     tag: ""
   service:
     type: ""
@@ -208,7 +215,7 @@ fvm:
 detector:
   image:
     registry: ''
-    repository: chaitin/safeline-detector
+    repository: safeline-detector
     tag: ""
   resources:
   #   limits:
@@ -233,7 +240,7 @@ detector:
 mario:
   image:
     registry: ''
-    repository: chaitin/safeline-mario
+    repository: safeline-mario
     tag: ""
   resources:
   #   limits:
@@ -258,8 +265,35 @@ mario:
 tengine:
   image:
     registry: ''
-    repository: chaitin/safeline-tengine
+    repository: safeline-tengine
     tag: ""
+  resources:
+  #   limits:
+  #     cpu: 1000m
+  #     memory: 1000Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 100Mi
+  podAnnotations: {}
+  serviceAccountName: ""
+  automountServiceAccountToken: false
+  replicas: 1
+  revisionHistoryLimit: 10
+  startupProbe:
+    enabled: false
+    initialDelaySeconds: 10
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  priorityClassName: 
+
+luigi:
+  image:
+    registry: ''
+    repository: safeline-luigi
+    tag: ""
+  service:
+    type: ClusterIP
   resources:
   #   limits:
   #     cpu: 1000m

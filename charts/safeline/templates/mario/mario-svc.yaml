@@ -8,10 +8,7 @@ spec:
   ports:
     - name: mario
       protocol: TCP
-      port: {{ template "safeline.mario.mario.port" . }}
-    - name: weblog
-      protocol: TCP
-      port: {{ template "safeline.mario.weblog.port" . }}
+      port: {{ template "safeline.mario.port" . }}
   selector:
 {{ include "safeline.matchLabels" . | indent 4 }}
     component: mario

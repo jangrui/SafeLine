@@ -54,15 +54,14 @@ spec:
           - -c
           - |-
             rm -rf /etc/nginx/lost+found
-            rm -rf /resources/management/lost+found
+            rm -rf /resources/mgt/lost+found
             rm -rf /resources/detector/lost+found
             rm -rf /var/log/lost+found
             rm -rf /usr/local/nginx/cache/lost+found
+            mkdir -p /var/log/nginx/nginx
         volumeMounts:
           - mountPath: /etc/nginx
             name: nginx
-          - mountPath: /resources/management
-            name: management
           - mountPath: /resources/detector
             name: detector
           - mountPath: /var/log
@@ -89,19 +88,19 @@ spec:
             containerPort: {{ template "safeline.tengine.health.port" . }}
           - name: http
             containerPort: {{ template "safeline.tengine.http.port" . }}
-          - name: https
-            containerPort: {{ template "safeline.tengine.https.port" . }}
         env:
-          - name: MGT_API
-            value: {{ template "safeline.management.url" . }}
+          - name: TCD_MGT_API
+            value: {{ template "safeline.mgt.api" . }}
+          - name: TCD_SNSERVER
+            value: {{ template "safeline.mgt.tcd" . }}
+          - name: SNSERVER_ADDR
+            value: {{ template "safeline.mgt.tcd" . }}
         volumeMounts:
           - name: localtime
             mountPath: /etc/localtime
             readOnly: true
           - mountPath: /etc/nginx
             name: nginx
-          - mountPath: /resources/management
-            name: management
           - mountPath: /resources/detector
             name: detector
           - mountPath: /var/log
@@ -121,9 +120,6 @@ spec:
         - name: nginx
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.persistentVolumeClaim.nginx.existingClaim | default (include "safeline.nginx" .) }}
-        - name: management
-          persistentVolumeClaim:
-            claimName: {{ .Values.persistence.persistentVolumeClaim.management.existingClaim | default (include "safeline.management" .) }}
         - name: detector
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.persistentVolumeClaim.detector.existingClaim | default (include "safeline.detector" .) }}
@@ -135,8 +131,6 @@ spec:
             claimName: {{ .Values.persistence.persistentVolumeClaim.tengine.existingClaim | default (include "safeline.tengine" .) }}
         {{- else -}}
         - name: nginx
-          emptyDir: {}
-        - name: management
           emptyDir: {}
         - name: detector
           emptyDir: {}

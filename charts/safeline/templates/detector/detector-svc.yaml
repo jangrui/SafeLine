@@ -6,10 +6,8 @@ metadata:
 {{ include "safeline.labels" . | indent 4 }}
 spec:
   ports:
-    - name: detector8000
-      port: {{ template "safeline.detector.detector8000.port" . }}
-    - name: detector8001
-      port: {{ template "safeline.detector.detector8001.port" . }}
+    - name: snserver
+      port: {{ template "safeline.detector.port" . }}
   selector:
 {{ include "safeline.matchLabels" . | indent 4 }}
     component: detector

@@ -50,19 +50,14 @@ spec:
         {{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
-          - name: manager
-            containerPort: {{ template "safeline.fvm.manager.port" . }}
-        env:
-          - name: FVM_LOGS_DIR
-            value: /logs/management
-          - name: DETECTOR_URL
-            value: http://{{ template "safeline.detector" . }}:{{ template "safeline.detector.detector8001.port" . }}
+          - name: api
+            containerPort: {{ template "safeline.fvm.api.port" . }}
+          - name: web
+            containerPort: {{ template "safeline.fvm.web.port" . }}
         volumeMounts:
           - name: localtime
             mountPath: /etc/localtime
             readOnly: true
-          - mountPath: /logs
-            name: logs
 {{- if .Values.fvm.resources }}
         resources:
 {{ toYaml .Values.fvm.resources | indent 10 }}
@@ -71,16 +66,6 @@ spec:
         - name: localtime
           hostPath:
             path: /etc/localtime
-        {{- if .Values.persistence.enabled }}
-        - name: logs
-          persistentVolumeClaim:
-            claimName: {{ .Values.persistence.persistentVolumeClaim.logs.existingClaim | default (include "safeline.logs" .) }}
-        {{- else -}}
-        - name: fvm
-          emptyDir: {}
-        - name: logs
-          emptyDir: {}
-        {{- end -}}
 
     {{- with .Values.fvm.nodeSelector }}
       nodeSelector:

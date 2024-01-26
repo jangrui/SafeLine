@@ -76,22 +76,20 @@ spec:
         {{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
-          - name: detector-8000
-            containerPort: {{ template "safeline.detector.detector8000.port" . }}
-          - name: detector-8001
-            containerPort: {{ template "safeline.detector.detector8001.port" . }}
+          - name: snserver
+            containerPort: {{ template "safeline.detector.port" . }}
         env:
           - name: LOG_DIR
             value: /logs/detector
         volumeMounts:
-          - name: localtime
-            mountPath: /etc/localtime
-            readOnly: true
           - mountPath: /resources/detector
             name: detector
           - mountPath: /logs
             name: logs
             subPath: detector
+          - name: localtime
+            mountPath: /etc/localtime
+            readOnly: true
 {{- if .Values.detector.resources }}
         resources:
 {{ toYaml .Values.detector.resources | indent 10 }}
@@ -130,4 +128,3 @@ spec:
     {{- if .Values.detector.priorityClassName }}
       priorityClassName: {{ .Values.detector.priorityClassName }}
     {{- end }}
-

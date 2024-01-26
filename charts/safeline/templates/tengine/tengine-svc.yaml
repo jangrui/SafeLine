@@ -12,9 +12,6 @@ spec:
     - name: http
       protocol: TCP
       port: {{ template "safeline.tengine.http.port" . }}
-    - name: https
-      protocol: TCP
-      port: {{ template "safeline.tengine.https.port" . }}
   selector:
 {{ include "safeline.matchLabels" . | indent 4 }}
     component: tengine
