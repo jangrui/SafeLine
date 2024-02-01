@@ -76,8 +76,8 @@ spec:
         {{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
-          - name: snserver
-            containerPort: {{ template "safeline.detector.port" . }}
+          - name: sns
+            containerPort: {{ template "safeline.detector.sns.port" . }}
         env:
           - name: LOG_DIR
             value: /logs/detector
