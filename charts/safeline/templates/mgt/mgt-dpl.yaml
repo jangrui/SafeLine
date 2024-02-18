@@ -81,8 +81,6 @@ spec:
         env:
           - name: MGT_PG
             value: {{ template "safeline.database.url" . }}
-          - name: MGT_LICENSE_SERVER
-            value: https://safeline-ce-4463.rivers.chaitin.cn/
         volumeMounts:
           - mountPath: /app/data
             name: mgt

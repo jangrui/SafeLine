@@ -204,3 +204,9 @@ http://{{ template "safeline.mario" . }}:{{ template "safeline.mario.port" . }}
 {{- define "safeline.luigi.port" -}}
     {{- printf "80" -}}
 {{- end -}}
+
+
+{{/* bridge */}}
+{{- define "safeline.bridge" -}}
+  {{- printf "%s-bridge" (include "safeline.fullname" .) -}}
+{{- end -}}
