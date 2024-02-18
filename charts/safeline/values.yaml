@@ -137,7 +137,7 @@ mgt:
   service:
     type: NodePort
     web:
-      nodePort: 31444
+      nodePort: 31443
   resources:
   #   limits:
   #     cpu: 1000m
