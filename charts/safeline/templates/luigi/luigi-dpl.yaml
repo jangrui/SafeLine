@@ -37,17 +37,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: luigi
-        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.luigi.image.repository }}:{{ .Chart.AppVersion }}
-        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.luigi.image.repository }}:{{ .Values.global.image.tag }}
-        {{- else if .Values.luigi.image.registry .Values.luigi.image.repository .Values.luigi.image.tag }}
-        image: {{ .Values.luigi.image.registry }}/{{ .Values.luigi.image.repository }}:{{ .Values.luigi.image.tag }}
-        {{- else if and .Values.luigi.image.repository .Values.luigi.image.tag (not .Values.luigi.image.registry) }}
-        image: {{ .Values.luigi.image.repository }}:{{ .Values.luigi.image.tag }}
-        {{- else if and .Values.luigi.image.repository (not .Values.luigi.image.tag) (not .Values.luigi.image.registry) }}
-        image: {{ .Values.luigi.image.repository }}:{{ .Chart.AppVersion }}
-        {{- end }}
+        image: {{ default .Values.global.image.registry .Values.luigi.image.registry }}/{{ .Values.luigi.image.repository }}:{{ default .Chart.AppVersion .Values.luigi.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         # command:
         # - sh

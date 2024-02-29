@@ -37,17 +37,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: fvm
-        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.fvm.image.repository }}:{{ .Chart.AppVersion }}
-        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.fvm.image.repository }}:{{ .Values.global.image.tag }}
-        {{- else if .Values.fvm.image.registry .Values.fvm.image.repository .Values.fvm.image.tag }}
-        image: {{ .Values.fvm.image.registry }}/{{ .Values.fvm.image.repository }}:{{ .Values.fvm.image.tag }}
-        {{- else if and .Values.fvm.image.repository .Values.fvm.image.tag (not .Values.fvm.image.registry) }}
-        image: {{ .Values.fvm.image.repository }}:{{ .Values.fvm.image.tag }}
-        {{- else if and .Values.fvm.image.repository (not .Values.fvm.image.tag) (not .Values.fvm.image.registry) }}
-        image: {{ .Values.fvm.image.repository }}:{{ .Chart.AppVersion }}
-        {{- end }}
+        image: {{ default .Values.global.image.registry .Values.fvm.image.registry }}/{{ .Values.fvm.image.repository }}:{{ default .Chart.AppVersion .Values.fvm.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
           - name: api

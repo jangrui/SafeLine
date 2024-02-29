@@ -188,7 +188,7 @@ fvm:
 
 detector:
   image:
-    registry: ''
+    registry: 'uhub.service.ucloud.cn/silkdo/chaitin'
     repository: safeline-detector
     tag: ""
   resources:
@@ -238,7 +238,7 @@ mario:
 
 tengine:
   image:
-    registry: ''
+    registry: 'uhub.service.ucloud.cn/silkdo/chaitin'
     repository: safeline-tengine
     tag: ""
   resources:

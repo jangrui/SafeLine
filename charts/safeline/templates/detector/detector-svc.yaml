@@ -6,6 +6,8 @@ metadata:
 {{ include "safeline.labels" . | indent 4 }}
 spec:
   ports:
+    - name: tcd
+      port: {{ template "safeline.detector.tcd.port" . }}
     - name: sns
       port: {{ template "safeline.detector.sns.port" . }}
   selector:

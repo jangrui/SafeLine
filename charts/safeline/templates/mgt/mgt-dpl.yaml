@@ -37,17 +37,7 @@ spec:
       terminationGracePeriodSeconds: 120
       initContainers:
       - name: delete-lost-found-dir
-        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.mgt.image.repository }}:{{ .Chart.AppVersion }}
-        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.mgt.image.repository }}:{{ .Values.global.image.tag }}
-        {{- else if .Values.mgt.image.registry .Values.mgt.image.repository .Values.mgt.image.tag }}
-        image: {{ .Values.mgt.image.registry }}/{{ .Values.mgt.image.repository }}:{{ .Values.mgt.image.tag }}
-        {{- else if and .Values.mgt.image.repository .Values.mgt.image.tag (not .Values.mgt.image.registry) }}
-        image: {{ .Values.mgt.image.repository }}:{{ .Values.mgt.image.tag }}
-        {{- else if and .Values.mgt.image.repository (not .Values.mgt.image.tag) (not .Values.mgt.image.registry) }}
-        image: {{ .Values.mgt.image.repository }}:{{ .Chart.AppVersion }}
-        {{- end }}
+        image: {{ default .Values.global.image.registry .Values.mgt.image.registry }}/{{ .Values.mgt.image.repository }}:{{ default .Chart.AppVersion .Values.mgt.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command:
           - sh
@@ -59,17 +49,7 @@ spec:
             name: mgt
       containers:
       - name: mgt
-        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.mgt.image.repository }}:{{ .Chart.AppVersion }}
-        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.mgt.image.repository }}:{{ .Values.global.image.tag }}
-        {{- else if .Values.mgt.image.registry .Values.mgt.image.repository .Values.mgt.image.tag }}
-        image: {{ .Values.mgt.image.registry }}/{{ .Values.mgt.image.repository }}:{{ .Values.mgt.image.tag }}
-        {{- else if and .Values.mgt.image.repository .Values.mgt.image.tag (not .Values.mgt.image.registry) }}
-        image: {{ .Values.mgt.image.repository }}:{{ .Values.mgt.image.tag }}
-        {{- else if and .Values.mgt.image.repository (not .Values.mgt.image.tag) (not .Values.mgt.image.registry) }}
-        image: {{ .Values.mgt.image.repository }}:{{ .Chart.AppVersion }}
-        {{- end }}
+        image: {{ default .Values.global.image.registry .Values.mgt.image.registry }}/{{ .Values.mgt.image.repository }}:{{ default .Chart.AppVersion .Values.mgt.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
           - name: web

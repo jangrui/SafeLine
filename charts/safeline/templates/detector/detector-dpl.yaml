@@ -37,17 +37,7 @@ spec:
       terminationGracePeriodSeconds: 120
       initContainers:
       - name: delete-lost-found-dir
-        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.detector.image.repository }}:{{ .Chart.AppVersion }}
-        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.detector.image.repository }}:{{ .Values.global.image.tag }}
-        {{- else if .Values.detector.image.registry .Values.detector.image.repository .Values.detector.image.tag }}
-        image: {{ .Values.detector.image.registry }}/{{ .Values.detector.image.repository }}:{{ .Values.detector.image.tag }}
-        {{- else if and .Values.detector.image.repository .Values.detector.image.tag (not .Values.detector.image.registry) }}
-        image: {{ .Values.detector.image.repository }}:{{ .Values.detector.image.tag }}
-        {{- else if and .Values.detector.image.repository (not .Values.detector.image.tag) (not .Values.detector.image.registry) }}
-        image: {{ .Values.detector.image.repository }}:{{ .Chart.AppVersion }}
-        {{- end }}
+        image: {{ default .Values.global.image.registry .Values.detector.image.registry }}/{{ .Values.detector.image.repository }}:{{ default .Chart.AppVersion .Values.detector.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command:
           - sh
@@ -63,19 +53,11 @@ spec:
             subPath: detector
       containers:
       - name: detector
-        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.detector.image.repository }}:{{ .Chart.AppVersion }}
-        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.detector.image.repository }}:{{ .Values.global.image.tag }}
-        {{- else if .Values.detector.image.registry .Values.detector.image.repository .Values.detector.image.tag }}
-        image: {{ .Values.detector.image.registry }}/{{ .Values.detector.image.repository }}:{{ .Values.detector.image.tag }}
-        {{- else if and .Values.detector.image.repository .Values.detector.image.tag (not .Values.detector.image.registry) }}
-        image: {{ .Values.detector.image.repository }}:{{ .Values.detector.image.tag }}
-        {{- else if and .Values.detector.image.repository (not .Values.detector.image.tag) (not .Values.detector.image.registry) }}
-        image: {{ .Values.detector.image.repository }}:{{ .Chart.AppVersion }}
-        {{- end }}
+        image: {{ default .Values.global.image.registry .Values.detector.image.registry }}/{{ .Values.detector.image.repository }}:{{ default .Chart.AppVersion .Values.detector.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
+          - name: tcd
+            containerPort: {{ template "safeline.detector.tcd.port" . }}
           - name: sns
             containerPort: {{ template "safeline.detector.sns.port" . }}
         env:

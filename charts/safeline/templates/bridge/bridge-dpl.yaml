@@ -37,17 +37,7 @@ spec:
       terminationGracePeriodSeconds: 120
       initContainers:
       - name: delete-lost-found-dir
-        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.bridge.image.repository }}:{{ .Chart.AppVersion }}
-        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.bridge.image.repository }}:{{ .Values.global.image.tag }}
-        {{- else if .Values.bridge.image.registry .Values.bridge.image.repository .Values.bridge.image.tag }}
-        image: {{ .Values.bridge.image.registry }}/{{ .Values.bridge.image.repository }}:{{ .Values.bridge.image.tag }}
-        {{- else if and .Values.bridge.image.repository .Values.bridge.image.tag (not .Values.bridge.image.registry) }}
-        image: {{ .Values.bridge.image.repository }}:{{ .Values.bridge.image.tag }}
-        {{- else if and .Values.bridge.image.repository (not .Values.bridge.image.tag) (not .Values.bridge.image.registry) }}
-        image: {{ .Values.bridge.image.repository }}:{{ .Chart.AppVersion }}
-        {{- end }}
+        image: {{ default .Values.global.image.registry .Values.bridge.image.registry }}/{{ .Values.bridge.image.repository }}:{{ default .Chart.AppVersion .Values.bridge.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command:
           - sh
@@ -59,17 +49,7 @@ spec:
             name: bridge
       containers:
       - name: bridge
-        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.bridge.image.repository }}:{{ .Chart.AppVersion }}
-        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.bridge.image.repository }}:{{ .Values.global.image.tag }}
-        {{- else if .Values.bridge.image.registry .Values.bridge.image.repository .Values.bridge.image.tag }}
-        image: {{ .Values.bridge.image.registry }}/{{ .Values.bridge.image.repository }}:{{ .Values.bridge.image.tag }}
-        {{- else if and .Values.bridge.image.repository .Values.bridge.image.tag (not .Values.bridge.image.registry) }}
-        image: {{ .Values.bridge.image.repository }}:{{ .Values.bridge.image.tag }}
-        {{- else if and .Values.bridge.image.repository (not .Values.bridge.image.tag) (not .Values.bridge.image.registry) }}
-        image: {{ .Values.bridge.image.repository }}:{{ .Chart.AppVersion }}
-        {{- end }}
+        image: {{ default .Values.global.image.registry .Values.bridge.image.registry }}/{{ .Values.bridge.image.repository }}:{{ default .Chart.AppVersion .Values.bridge.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command:
           - /app/bridge

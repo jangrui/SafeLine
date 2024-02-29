@@ -149,8 +149,16 @@ https://{{ template "safeline.mgt" . }}:{{ template "safeline.mgt.web.port" . }}
   {{- printf "%s-detector" (include "safeline.fullname" .) -}}
 {{- end -}}
 
+{{- define "safeline.detector.tcd.port" -}}
+    {{- printf "8000" -}}
+{{- end -}}
+
 {{- define "safeline.detector.sns.port" -}}
     {{- printf "8001" -}}
+{{- end -}}
+
+{{- define "safeline.detector.tcd" -}}
+  {{ template "safeline.detector" . }}:{{ template "safeline.detector.tcd.port" . }}
 {{- end -}}
 
 
