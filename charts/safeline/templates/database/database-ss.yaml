@@ -76,13 +76,33 @@ spec:
           - name: POSTGRES_USER
             value: {{ template "safeline.database.username" . }}
         volumeMounts:
-        - name: database-data
-          mountPath: /var/lib/postgresql/data
-        - name: shm-volume
-          mountPath: /dev/shm
-        - name: localtime
-          mountPath: /etc/localtime
-          readOnly: true
+          - name: database-data
+            mountPath: /var/lib/postgresql/data
+          - name: shm-volume
+            mountPath: /dev/shm
+          - name: localtime
+            mountPath: /etc/localtime
+            readOnly: true
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pg_isready -U safeline-ce -d safeline-ce
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pg_isready -U safeline-ce -d safeline-ce
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
       volumes:
       - name: localtime
         hostPath:
