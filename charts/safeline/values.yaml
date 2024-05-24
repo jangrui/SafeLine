@@ -188,6 +188,7 @@ fvm:
 
 detector:
   image:
+    registry: ''
     repository: safeline-detector
     tag: ""
   resources:
@@ -237,6 +238,7 @@ mario:
 
 tengine:
   image:
+    registry: ''
     repository: safeline-tengine
     tag: ""
   resources:
