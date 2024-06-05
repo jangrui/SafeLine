@@ -218,3 +218,12 @@ http://{{ template "safeline.mario" . }}:{{ template "safeline.mario.port" . }}
 {{- define "safeline.bridge" -}}
   {{- printf "%s-bridge" (include "safeline.fullname" .) -}}
 {{- end -}}
+
+{{/* chaos */}}
+{{- define "safeline.chaos" -}}
+  {{- printf "%s-chaos" (include "safeline.fullname" .) -}}
+{{- end -}}
+
+{{- define "safeline.chaos.port" -}}
+    {{- printf "23333" -}}
+{{- end -}}

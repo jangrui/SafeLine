@@ -314,3 +314,30 @@ bridge:
   affinity: {}
   tolerations: []
   priorityClassName: 
+
+chaos:
+  image:
+    registry: ''
+    repository: safeline-chaos
+    tag: ""
+  service:
+    type: ClusterIP
+  resources:
+  #   limits:
+  #     cpu: 1000m
+  #     memory: 1000Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 100Mi
+  podAnnotations: {}
+  serviceAccountName: ""
+  automountServiceAccountToken: false
+  replicas: 1
+  revisionHistoryLimit: 10
+  startupProbe:
+    enabled: false
+    initialDelaySeconds: 10
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  priorityClassName: 
