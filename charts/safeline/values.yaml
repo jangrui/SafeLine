@@ -82,6 +82,13 @@ persistence:
       size: 1Gi
       annotations: {}
 
+    chaos:
+      existingClaim: ""
+      storageClass: ""
+      accessMode: ReadWriteMany
+      size: 1Gi
+      annotations: {}
+
 database:
   type: internal
   internal:
@@ -191,6 +198,8 @@ detector:
     registry: 'uhub.service.ucloud.cn/silkdo/chaitin'
     repository: safeline-detector
     tag: ""
+  service:
+    type: ClusterIP
   resources:
   #   limits:
   #     cpu: 1000m
@@ -216,6 +225,8 @@ mario:
     registry: ''
     repository: safeline-mario
     tag: ""
+  service:
+    type: ClusterIP
   resources:
   #   limits:
   #     cpu: 1000m
@@ -241,6 +252,8 @@ tengine:
     registry: 'uhub.service.ucloud.cn/silkdo/chaitin'
     repository: safeline-tengine
     tag: ""
+  service:
+    type: ClusterIP
   resources:
   #   limits:
   #     cpu: 1000m

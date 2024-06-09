@@ -35,17 +35,48 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.chaos.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
+      initContainers:
+      - name: delete-lost-found-dir
+        image: {{ default .Values.global.image.registry .Values.chaos.image.registry }}/{{ .Values.chaos.image.repository }}:{{ default .Chart.AppVersion .Values.chaos.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command:
+          - sh
+          - -c
+          - |-
+            rm -rf /app/chaos/lost+found
+        volumeMounts:
+          - mountPath: /app/chaos
+            name: chaos
       containers:
       - name: chaos
         image: {{ default .Values.global.image.registry .Values.chaos.image.registry }}/{{ .Values.chaos.image.repository }}:{{ default .Chart.AppVersion .Values.chaos.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
-        ports:
-          - name: chaos
-            containerPort: {{ template "safeline.chaos.port" . }}
 {{- if .Values.chaos.resources }}
         resources:
 {{ toYaml .Values.chaos.resources | indent 10 }}
 {{- end }}
+        ports:
+          - name: chaos
+            containerPort: {{ template "safeline.chaos.port" . }}
+        volumeMounts:
+          - name: localtime
+            mountPath: /etc/localtime
+            readOnly: true
+          - mountPath: /app/chaos
+            name: chaos
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+
+        {{- if .Values.persistence.enabled }}
+        - name: chaos
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.persistentVolumeClaim.chaos.existingClaim | default (include "safeline.chaos" .) }}
+        {{- else -}}
+        - name: chaos
+          emptyDir: {}
+        {{- end -}}
 
     {{- with .Values.chaos.nodeSelector }}
       nodeSelector:
