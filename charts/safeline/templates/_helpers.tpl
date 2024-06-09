@@ -157,6 +157,10 @@ https://{{ template "safeline.mgt" . }}:{{ template "safeline.mgt.web.port" . }}
     {{- printf "8001" -}}
 {{- end -}}
 
+{{- define "safeline.detector.koopa.port" -}}
+    {{- printf "7777" -}}
+{{- end -}}
+
 {{- define "safeline.detector.tcd" -}}
   {{ template "safeline.detector" . }}:{{ template "safeline.detector.tcd.port" . }}
 {{- end -}}
@@ -183,6 +187,10 @@ http://{{ template "safeline.mario" . }}:{{ template "safeline.mario.port" . }}
 
 {{- define "safeline.tengine.health.port" -}}
     {{- printf "65443" -}}
+{{- end -}}
+
+{{- define "safeline.tengine.tcd.port" -}}
+    {{- printf "65508" -}}
 {{- end -}}
 
 {{- define "safeline.tengine.http.port" -}}
@@ -225,5 +233,5 @@ http://{{ template "safeline.mario" . }}:{{ template "safeline.mario.port" . }}
 {{- end -}}
 
 {{- define "safeline.chaos.port" -}}
-    {{- printf "23333" -}}
+    {{- printf "9000" -}}
 {{- end -}}

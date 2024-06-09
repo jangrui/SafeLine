@@ -61,6 +61,8 @@ spec:
             containerPort: {{ template "safeline.detector.tcd.port" . }}
           - name: sns
             containerPort: {{ template "safeline.detector.sns.port" . }}
+          - name: koopa
+            containerPort: {{ template "safeline.detector.koopa.port" . }}
         env:
           - name: LOG_DIR
             value: /logs/detector
@@ -73,10 +75,7 @@ spec:
           - name: localtime
             mountPath: /etc/localtime
             readOnly: true
-{{- if .Values.detector.resources }}
-        resources:
-{{ toYaml .Values.detector.resources | indent 10 }}
-{{- end }}
+
       volumes:
         - name: localtime
           hostPath:
@@ -95,6 +94,11 @@ spec:
         - name: logs
           emptyDir: {}
         {{- end -}}
+
+{{- if .Values.detector.resources }}
+        resources:
+{{ toYaml .Values.detector.resources | indent 10 }}
+{{- end }}
 
     {{- with .Values.detector.nodeSelector }}
       nodeSelector:

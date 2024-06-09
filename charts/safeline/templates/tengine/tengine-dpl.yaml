@@ -69,6 +69,8 @@ spec:
         ports:
           - name: health
             containerPort: {{ template "safeline.tengine.health.port" . }}
+          - name: tcd
+            containerPort: {{ template "safeline.tengine.tcd.port" . }}
           - name: http
             containerPort: {{ template "safeline.tengine.http.port" . }}
         env:
@@ -93,10 +95,7 @@ spec:
             name: cache
           - mountPath: /resources/chaos
             name: chaos
-{{- if .Values.tengine.resources }}
-        resources:
-{{ toYaml .Values.tengine.resources | indent 10 }}
-{{- end }}
+
       volumes:
         - name: localtime
           hostPath:
@@ -126,7 +125,14 @@ spec:
           emptyDir: {}
         - name: cache
           emptyDir: {}
+        - name: chaos
+          emptyDir: {}
         {{- end -}}
+
+{{- if .Values.tengine.resources }}
+        resources:
+{{ toYaml .Values.tengine.resources | indent 10 }}
+{{- end }}
 
     {{- with .Values.tengine.nodeSelector }}
       nodeSelector:
