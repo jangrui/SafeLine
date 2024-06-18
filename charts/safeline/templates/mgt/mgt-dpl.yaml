@@ -44,9 +44,13 @@ spec:
           - -c
           - |-
             rm -rf /app/data/lost+found
+            rm -rf /app/log/nginx/lost+found
         volumeMounts:
           - mountPath: /app/data
             name: mgt
+          - mountPath: /app/log
+            name: logs
+            subPath: nginx
       containers:
       - name: mgt
         image: {{ default .Values.global.image.registry .Values.mgt.image.registry }}/{{ .Values.mgt.image.repository }}:{{ default .Chart.AppVersion .Values.mgt.image.tag }}
@@ -62,11 +66,14 @@ spec:
           - name: MGT_PG
             value: {{ template "safeline.database.url" . }}
         volumeMounts:
-          - mountPath: /app/data
-            name: mgt
           - name: localtime
             mountPath: /etc/localtime
             readOnly: true
+          - mountPath: /app/data
+            name: mgt
+          - mountPath: /app/log
+            name: logs
+            subPath: nginx
         livenessProbe:
           httpGet:
             scheme: HTTPS
@@ -99,8 +106,13 @@ spec:
         - name: mgt
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.persistentVolumeClaim.mgt.existingClaim | default (include "safeline.mgt" .) }}
+        - name: logs
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.persistentVolumeClaim.logs.existingClaim | default (include "safeline.logs" .) }}
         {{- else -}}
         - name: mgt
+          emptyDir: {}
+        - name: logs
           emptyDir: {}
         {{- end -}}
 
