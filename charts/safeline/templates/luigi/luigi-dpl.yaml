@@ -39,11 +39,6 @@ spec:
       - name: luigi
         image: {{ default .Values.global.image.registry .Values.luigi.image.registry }}/{{ .Values.luigi.image.repository }}:{{ default .Chart.AppVersion .Values.luigi.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
-        # command:
-        # - sh
-        # - -c
-        # - |
-        #   tail -f /dev/null
         ports:
           - name: luigi
             containerPort: {{ template "safeline.luigi.port" . }}

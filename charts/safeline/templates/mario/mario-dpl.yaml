@@ -37,17 +37,7 @@ spec:
       terminationGracePeriodSeconds: 120
       initContainers:
       - name: delete-lost-found-dir
-        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.mario.image.repository }}:{{ .Chart.AppVersion }}
-        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.mario.image.repository }}:{{ .Values.global.image.tag }}
-        {{- else if .Values.mario.image.registry .Values.mario.image.repository .Values.mario.image.tag }}
-        image: {{ .Values.mario.image.registry }}/{{ .Values.mario.image.repository }}:{{ .Values.mario.image.tag }}
-        {{- else if and .Values.mario.image.repository .Values.mario.image.tag (not .Values.mario.image.registry) }}
-        image: {{ .Values.mario.image.repository }}:{{ .Values.mario.image.tag }}
-        {{- else if and .Values.mario.image.repository (not .Values.mario.image.tag) (not .Values.mario.image.registry) }}
-        image: {{ .Values.mario.image.repository }}:{{ .Chart.AppVersion }}
-        {{- end }}
+        image: {{ default .Values.global.image.registry .Values.mario.image.registry }}/{{ .Values.mario.image.repository }}:{{ default .Chart.AppVersion .Values.mario.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command:
           - sh
@@ -63,17 +53,7 @@ spec:
             subPath: mario
       containers:
       - name: mario
-        {{- if and .Values.global.image.registry (not .Values.global.image.tag) }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.mario.image.repository }}:{{ .Chart.AppVersion }}
-        {{- else if and .Values.global.image.registry .Values.global.image.tag }}
-        image: {{ .Values.global.image.registry }}/{{ .Values.mario.image.repository }}:{{ .Values.global.image.tag }}
-        {{- else if .Values.mario.image.registry .Values.mario.image.repository .Values.mario.image.tag }}
-        image: {{ .Values.mario.image.registry }}/{{ .Values.mario.image.repository }}:{{ .Values.mario.image.tag }}
-        {{- else if and .Values.mario.image.repository .Values.mario.image.tag (not .Values.mario.image.registry) }}
-        image: {{ .Values.mario.image.repository }}:{{ .Values.mario.image.tag }}
-        {{- else if and .Values.mario.image.repository (not .Values.mario.image.tag) (not .Values.mario.image.registry) }}
-        image: {{ .Values.mario.image.repository }}:{{ .Chart.AppVersion }}
-        {{- end }}
+        image: {{ default .Values.global.image.registry .Values.mario.image.registry }}/{{ .Values.mario.image.repository }}:{{ default .Chart.AppVersion .Values.mario.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
           - name: mario
@@ -108,7 +88,7 @@ spec:
             claimName: {{ .Values.persistence.persistentVolumeClaim.mario.existingClaim | default (include "safeline.mario" .) }}
         - name: logs
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.persistentVolumeClaim.logs.existingClaim |default (include "safeline.logs" .) }}
+            claimName: {{ .Values.persistence.persistentVolumeClaim.logs.existingClaim | default (include "safeline.logs" .) }}
         {{- else -}}
         - name: mario
           emptyDir: {}
