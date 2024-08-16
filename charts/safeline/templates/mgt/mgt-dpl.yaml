@@ -63,10 +63,6 @@ spec:
           - name: tcd
             containerPort: {{ template "safeline.mgt.tcd.port" . }}
         env:
-          - name: MGT_READ_ONLY
-            value: "true"
-          - name: MGT_NO_AUTH
-            value: "true"
           - name: MGT_PG
             value: {{ template "safeline.database.url" . }}
         volumeMounts:
