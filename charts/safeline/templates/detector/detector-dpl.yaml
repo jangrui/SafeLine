@@ -35,23 +35,6 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.detector.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
-      initContainers:
-      - name: delete-lost-found-dir
-        image: {{ default .Values.global.image.registry .Values.detector.image.registry }}/{{ .Values.detector.image.repository }}:{{ default .Chart.AppVersion .Values.detector.image.tag }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
-        command:
-          - sh
-          - -c
-          - |-
-            rm -rf /resources/detector/lost+found
-            rm -rf /log/lost+found
-            echo "bind_addr: 0.0.0.0\nlisten_port: 8000" > /resources/detector/detector.yml
-        volumeMounts:
-          - mountPath: /resources/detector
-            name: detector
-          - mountPath: /logs
-            name: logs
-            subPath: detector
       containers:
       - name: detector
         image: {{ default .Values.global.image.registry .Values.detector.image.registry }}/{{ .Values.detector.image.repository }}:{{ default .Chart.AppVersion .Values.detector.image.tag }}

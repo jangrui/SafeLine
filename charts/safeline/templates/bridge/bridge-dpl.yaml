@@ -35,18 +35,6 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.bridge.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
-      initContainers:
-      - name: delete-lost-found-dir
-        image: {{ default .Values.global.image.registry .Values.bridge.image.registry }}/{{ .Values.bridge.image.repository }}:{{ default .Chart.AppVersion .Values.bridge.image.tag }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
-        command:
-          - sh
-          - -c
-          - |-
-            rm -rf /app/run/lost+found
-        volumeMounts:
-          - mountPath: /app/run
-            name: bridge
       containers:
       - name: bridge
         image: {{ default .Values.global.image.registry .Values.bridge.image.registry }}/{{ .Values.bridge.image.repository }}:{{ default .Chart.AppVersion .Values.bridge.image.tag }}

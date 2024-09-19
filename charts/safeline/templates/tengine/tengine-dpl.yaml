@@ -35,33 +35,6 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.tengine.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
-      initContainers:
-      - name: delete-lost-found-dir
-        image: {{ default .Values.global.image.registry .Values.tengine.image.registry }}/{{ .Values.tengine.image.repository }}:{{ default .Chart.AppVersion .Values.tengine.image.tag }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
-        command:
-          - sh
-          - -c
-          - |-
-            rm -rf /etc/nginx/lost+found
-            rm -rf /resources/mgt/lost+found
-            rm -rf /resources/detector/lost+found
-            rm -rf /var/log/lost+found
-            rm -rf /usr/local/nginx/cache/lost+found
-            rm -rf /resources/chaos/lost+found
-            mkdir -p /var/log/nginx/nginx
-        volumeMounts:
-          - mountPath: /etc/nginx
-            name: nginx
-          - mountPath: /resources/detector
-            name: detector
-          - mountPath: /var/log
-            name: logs
-            subPath: nginx
-          - mountPath: /usr/local/nginx/cache
-            name: cache
-          - mountPath: /resources/chaos
-            name: chaos
       containers:
       - name: tengine
         image: {{ default .Values.global.image.registry .Values.tengine.image.registry }}/{{ .Values.tengine.image.repository }}:{{ default .Chart.AppVersion .Values.tengine.image.tag }}
@@ -93,8 +66,8 @@ spec:
             subPath: nginx
           - mountPath: /usr/local/nginx/cache
             name: cache
-          - mountPath: /resources/chaos
-            name: chaos
+          - mountPath: /resources/sock
+            name: sock
 
       volumes:
         - name: localtime
@@ -113,9 +86,9 @@ spec:
         - name: cache
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.persistentVolumeClaim.tengine.existingClaim | default (include "safeline.tengine" .) }}
-        - name: chaos
+        - name: sock
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.persistentVolumeClaim.chaos.existingClaim | default (include "safeline.chaos" .) }}
+            claimName: {{ .Values.persistence.persistentVolumeClaim.sock.existingClaim | default (include "safeline.sock" .) }}
         {{- else -}}
         - name: nginx
           emptyDir: {}
@@ -125,7 +98,7 @@ spec:
           emptyDir: {}
         - name: cache
           emptyDir: {}
-        - name: chaos
+        - name: sock
           emptyDir: {}
         {{- end -}}
 

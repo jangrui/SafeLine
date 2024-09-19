@@ -111,6 +111,10 @@ postgres://{{ template "safeline.database.username" . }}:{{ template "safeline.d
   {{- printf "%s-logs" (include "safeline.fullname" .) -}}
 {{- end -}}
 
+{{/* sock */}}
+{{- define "safeline.sock" -}}
+  {{- printf "%s-sock" (include "safeline.fullname" .) -}}
+{{- end -}}
 
 {{/* nginx */}}
 {{- define "safeline.nginx" -}}

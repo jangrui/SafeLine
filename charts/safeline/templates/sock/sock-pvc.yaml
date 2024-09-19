@@ -1,0 +1,30 @@
+{{- $sock := .Values.persistence.persistentVolumeClaim.sock -}}
+{{- if and .Values.persistence.enabled (not $sock.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "safeline.sock" . }}
+  annotations:
+  {{- range $key, $value := $sock.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- if eq .Values.persistence.resourcePolicy "keep" }}
+    helm.sh/resource-policy: keep
+  {{- end }}
+  labels:
+{{ include "safeline.labels" . | indent 4 }}
+    component: sock
+spec:
+  accessModes: 
+    - {{ $sock.accessMode }}
+  resources:
+    requests:
+      storage: {{ $sock.size }}
+  {{- if $sock.storageClass }}
+    {{- if eq "-" $sock.storageClass }}
+  storageClassName: ""
+    {{- else }}
+  storageClassName: {{ $sock.storageClass }}
+    {{- end }}
+  {{- end }}
+{{- end }}

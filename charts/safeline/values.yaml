@@ -13,7 +13,7 @@ strategy:
   type: RollingUpdate
   rollingUpdate:
     maxUnavailable: 1
-    maxSurge: 0
+    maxSurge: 1
 
 persistence:
   enabled: true
@@ -23,6 +23,13 @@ persistence:
       existingClaim: ""
       storageClass: ""
       accessMode: ReadWriteOnce
+      size: 1Gi
+      annotations: {}
+
+    sock:
+      existingClaim: ""
+      storageClass: ""
+      accessMode: ReadWriteMany
       size: 1Gi
       annotations: {}
 

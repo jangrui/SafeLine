@@ -35,18 +35,6 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.chaos.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
-      initContainers:
-      - name: delete-lost-found-dir
-        image: {{ default .Values.global.image.registry .Values.chaos.image.registry }}/{{ .Values.chaos.image.repository }}:{{ default .Chart.AppVersion .Values.chaos.image.tag }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
-        command:
-          - sh
-          - -c
-          - |-
-            rm -rf /app/chaos/lost+found
-        volumeMounts:
-          - mountPath: /app/chaos
-            name: chaos
       containers:
       - name: chaos
         image: {{ default .Values.global.image.registry .Values.chaos.image.registry }}/{{ .Values.chaos.image.repository }}:{{ default .Chart.AppVersion .Values.chaos.image.tag }}

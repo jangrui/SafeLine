@@ -35,22 +35,6 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.mgt.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
-      initContainers:
-      - name: delete-lost-found-dir
-        image: {{ default .Values.global.image.registry .Values.mgt.image.registry }}/{{ .Values.mgt.image.repository }}:{{ default .Chart.AppVersion .Values.mgt.image.tag }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
-        command:
-          - sh
-          - -c
-          - |-
-            rm -rf /app/data/lost+found
-            rm -rf /app/log/nginx/lost+found
-        volumeMounts:
-          - mountPath: /app/data
-            name: mgt
-          - mountPath: /app/log
-            name: logs
-            subPath: nginx
       containers:
       - name: mgt
         image: {{ default .Values.global.image.registry .Values.mgt.image.registry }}/{{ .Values.mgt.image.repository }}:{{ default .Chart.AppVersion .Values.mgt.image.tag }}
@@ -71,6 +55,8 @@ spec:
             readOnly: true
           - mountPath: /app/data
             name: mgt
+          - mountPath: /app/sock
+            name: sock
           - mountPath: /app/log
             name: logs
             subPath: nginx
@@ -106,11 +92,16 @@ spec:
         - name: mgt
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.persistentVolumeClaim.mgt.existingClaim | default (include "safeline.mgt" .) }}
+        - name: sock
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.persistentVolumeClaim.sock.existingClaim | default (include "safeline.sock" .) }}
         - name: logs
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.persistentVolumeClaim.logs.existingClaim | default (include "safeline.logs" .) }}
         {{- else -}}
         - name: mgt
+          emptyDir: {}
+        - name: sock
           emptyDir: {}
         - name: logs
           emptyDir: {}

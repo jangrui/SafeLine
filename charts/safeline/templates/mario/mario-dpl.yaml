@@ -35,22 +35,6 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.mario.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
-      initContainers:
-      - name: delete-lost-found-dir
-        image: {{ default .Values.global.image.registry .Values.mario.image.registry }}/{{ .Values.mario.image.repository }}:{{ default .Chart.AppVersion .Values.mario.image.tag }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
-        command:
-          - sh
-          - -c
-          - |-
-            rm -rf /resources/mario/lost+found
-            rm -rf /log/lost+found
-        volumeMounts:
-          - mountPath: /resources/mario
-            name: mario
-          - mountPath: /logs
-            name: logs
-            subPath: mario
       containers:
       - name: mario
         image: {{ default .Values.global.image.registry .Values.mario.image.registry }}/{{ .Values.mario.image.repository }}:{{ default .Chart.AppVersion .Values.mario.image.tag }}
