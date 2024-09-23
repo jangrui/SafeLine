@@ -59,7 +59,6 @@ spec:
             name: sock
           - mountPath: /app/log
             name: logs
-            subPath: nginx
         livenessProbe:
           httpGet:
             scheme: HTTPS

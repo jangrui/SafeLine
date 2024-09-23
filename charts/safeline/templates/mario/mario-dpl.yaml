@@ -54,7 +54,6 @@ spec:
             name: mario
           - mountPath: /logs
             name: logs
-            subPath: mario
           - name: localtime
             mountPath: /etc/localtime
             readOnly: true

@@ -54,7 +54,6 @@ spec:
             name: detector
           - mountPath: /logs
             name: logs
-            subPath: detector
           - name: localtime
             mountPath: /etc/localtime
             readOnly: true
