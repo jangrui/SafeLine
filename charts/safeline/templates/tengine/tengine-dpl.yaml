@@ -35,6 +35,18 @@ spec:
       {{- end }}
       automountServiceAccountToken: {{ .Values.tengine.automountServiceAccountToken | default false }}
       terminationGracePeriodSeconds: 120
+      initContainers:
+      - name: mkdir-nginx-logs-dir
+        image: {{ default .Values.global.image.registry .Values.tengine.image.registry }}/{{ .Values.tengine.image.repository }}:{{ default .Chart.AppVersion .Values.tengine.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command:
+          - sh
+          - -c
+          - |-
+            mkdir -p /var/log/nginx
+        volumeMounts:
+          - mountPath: /var/log
+            name: logs
       containers:
       - name: tengine
         image: {{ default .Values.global.image.registry .Values.tengine.image.registry }}/{{ .Values.tengine.image.repository }}:{{ default .Chart.AppVersion .Values.tengine.image.tag }}
@@ -53,6 +65,8 @@ spec:
             value: {{ template "safeline.detector.tcd" . }}
           - name: SNSERVER_ADDR
             value: {{ template "safeline.detector.tcd" . }}
+          - name: TCD_TASK_ADDRESS
+            value: 0.0.0.0:{{ template "safeline.tengine.tcd.port" . }}
         volumeMounts:
           - name: localtime
             mountPath: /etc/localtime

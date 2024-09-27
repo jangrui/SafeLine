@@ -49,6 +49,8 @@ spec:
         env:
           - name: MGT_PG
             value: {{ template "safeline.database.url" . }}
+          - name: TCD_TASK_ADDRESS
+            value: {{ template "safeline.tengine" . }}:{{ template "safeline.tengine.tcd.port" . }}
         volumeMounts:
           - name: localtime
             mountPath: /etc/localtime

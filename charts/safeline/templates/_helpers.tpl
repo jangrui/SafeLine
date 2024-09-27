@@ -170,20 +170,6 @@ https://{{ template "safeline.mgt" . }}:{{ template "safeline.mgt.web.port" . }}
 {{- end -}}
 
 
-{{/* mario */}}
-{{- define "safeline.mario" -}}
-  {{- printf "%s-mario" (include "safeline.fullname" .) -}}
-{{- end -}}
-
-{{- define "safeline.mario.port" -}}
-    {{- printf "3335" -}}
-{{- end -}}
-
-{{- define "safeline.mario.url" -}}
-http://{{ template "safeline.mario" . }}:{{ template "safeline.mario.port" . }}
-{{- end -}}
-
-
 {{/* tengine */}}
 {{- define "safeline.tengine" -}}
   {{- printf "%s-tengine" (include "safeline.fullname" .) -}}
@@ -194,7 +180,7 @@ http://{{ template "safeline.mario" . }}:{{ template "safeline.mario.port" . }}
 {{- end -}}
 
 {{- define "safeline.tengine.tcd.port" -}}
-    {{- printf "65508" -}}
+    {{- printf "8888" -}}
 {{- end -}}
 
 {{- define "safeline.tengine.http.port" -}}
