@@ -20,7 +20,9 @@ spec:
   resources:
     requests:
       storage: {{ $logs.size }}
-  {{- if $logs.storageClass }}
+  {{- if .Values.global.persistence.storageClass }}
+  storageClassName: {{ .Values.global.persistence.storageClass }}
+  {{- else if $logs.storageClass }}
     {{- if eq "-" $logs.storageClass }}
   storageClassName: ""
     {{- else }}

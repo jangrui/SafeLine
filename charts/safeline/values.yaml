@@ -8,6 +8,8 @@ global:
   image:
     registry: swr.cn-east-3.myhuaweicloud.com/chaitin-safeline
     tag: ""
+  persistence:
+    storageClass: ""
 
 strategy:
   type: RollingUpdate
@@ -61,7 +63,7 @@ persistence:
       size: 1Gi
       annotations: {}
 
-    tengine:
+    cache:
       existingClaim: ""
       storageClass: ""
       accessMode: ReadWriteMany
@@ -75,14 +77,14 @@ persistence:
       size: 1Gi
       annotations: {}
 
-    bridge:
+    chaos:
       existingClaim: ""
       storageClass: ""
       accessMode: ReadWriteMany
       size: 1Gi
       annotations: {}
 
-    chaos:
+    run:
       existingClaim: ""
       storageClass: ""
       accessMode: ReadWriteMany

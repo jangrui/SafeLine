@@ -20,7 +20,9 @@ spec:
   resources:
     requests:
       storage: {{ $nginx.size }}
-  {{- if $nginx.storageClass }}
+  {{- if .Values.global.persistence.storageClass }}
+  storageClassName: {{ .Values.global.persistence.storageClass }}
+  {{- else if $nginx.storageClass }}
     {{- if eq "-" $nginx.storageClass }}
   storageClassName: ""
     {{- else }}

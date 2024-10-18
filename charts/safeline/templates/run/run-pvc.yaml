@@ -1,11 +1,11 @@
-{{- $sock := .Values.persistence.persistentVolumeClaim.sock -}}
-{{- if and .Values.persistence.enabled (not $sock.existingClaim) }}
+{{- $run := .Values.persistence.persistentVolumeClaim.run -}}
+{{- if and .Values.persistence.enabled (not $run.existingClaim) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "safeline.sock" . }}
+  name: {{ template "safeline.run" . }}
   annotations:
-  {{- range $key, $value := $sock.annotations }}
+  {{- range $key, $value := $run.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
   {{- if eq .Values.persistence.resourcePolicy "keep" }}
@@ -13,20 +13,20 @@ metadata:
   {{- end }}
   labels:
 {{ include "safeline.labels" . | indent 4 }}
-    component: sock
+    component: run
 spec:
   accessModes: 
-    - {{ $sock.accessMode }}
+    - {{ $run.accessMode }}
   resources:
     requests:
-      storage: {{ $sock.size }}
+      storage: {{ $run.size }}
   {{- if .Values.global.persistence.storageClass }}
   storageClassName: {{ .Values.global.persistence.storageClass }}
-  {{- else if $sock.storageClass }}
-    {{- if eq "-" $sock.storageClass }}
+  {{- else if $run.storageClass }}
+    {{- if eq "-" $run.storageClass }}
   storageClassName: ""
     {{- else }}
-  storageClassName: {{ $sock.storageClass }}
+  storageClassName: {{ $run.storageClass }}
     {{- end }}
   {{- end }}
 {{- end }}

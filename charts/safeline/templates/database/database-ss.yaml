@@ -126,7 +126,9 @@ spec:
       {{- end }}
     spec:
       accessModes: [{{ $database.accessMode | quote }}]
-      {{- if $database.storageClass }}
+      {{- if .Values.global.persistence.storageClass }}
+      storageClassName: "{{ .Values.global.persistence.storageClass }}"
+      {{- else if $database.storageClass }}
       {{- if (eq "-" $database.storageClass) }}
       storageClassName: ""
       {{- else }}

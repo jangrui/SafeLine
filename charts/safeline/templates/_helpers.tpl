@@ -121,6 +121,16 @@ postgres://{{ template "safeline.database.username" . }}:{{ template "safeline.d
   {{- printf "%s-nginx" (include "safeline.fullname" .) -}}
 {{- end -}}
 
+{{/* run */}}
+{{- define "safeline.run" -}}
+  {{- printf "%s-run" (include "safeline.fullname" .) -}}
+{{- end -}}
+
+{{/* cache */}}
+{{- define "safeline.cache" -}}
+  {{- printf "%s-cache" (include "safeline.fullname" .) -}}
+{{- end -}}
+
 
 {{/* mgt */}}
 {{- define "safeline.mgt" -}}

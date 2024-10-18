@@ -81,7 +81,8 @@ spec:
             name: cache
           - mountPath: /app/sock
             name: sock
-
+          - mountPath: /app/run
+            name: run
       volumes:
         - name: localtime
           hostPath:
@@ -98,10 +99,13 @@ spec:
             claimName: {{ .Values.persistence.persistentVolumeClaim.logs.existingClaim | default (include "safeline.logs" .) }}
         - name: cache
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.persistentVolumeClaim.tengine.existingClaim | default (include "safeline.tengine" .) }}
+            claimName: {{ .Values.persistence.persistentVolumeClaim.cache.existingClaim | default (include "safeline.cache" .) }}
         - name: sock
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.persistentVolumeClaim.sock.existingClaim | default (include "safeline.sock" .) }}
+        - name: run
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.persistentVolumeClaim.run.existingClaim | default (include "safeline.run" .) }}
         {{- else -}}
         - name: nginx
           emptyDir: {}
@@ -112,6 +116,8 @@ spec:
         - name: cache
           emptyDir: {}
         - name: sock
+          emptyDir: {}
+        - name: run
           emptyDir: {}
         {{- end -}}
 
