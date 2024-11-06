@@ -75,6 +75,8 @@ spec:
             name: nginx
           - mountPath: /resources/detector
             name: detector
+          - mountPath: /resources/chaos
+            name: chaos
           - mountPath: /var/log
             name: logs
           - mountPath: /usr/local/nginx/cache
@@ -94,6 +96,9 @@ spec:
         - name: detector
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.persistentVolumeClaim.detector.existingClaim | default (include "safeline.detector" .) }}
+        - name: chaos
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.persistentVolumeClaim.chaos.existingClaim | default (include "safeline.chaos" .) }}
         - name: logs
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.persistentVolumeClaim.logs.existingClaim | default (include "safeline.logs" .) }}
@@ -110,6 +115,8 @@ spec:
         - name: nginx
           emptyDir: {}
         - name: detector
+          emptyDir: {}
+        - name: chaos
           emptyDir: {}
         - name: logs
           emptyDir: {}
