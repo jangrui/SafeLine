@@ -37,7 +37,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: chaos
-        image: {{ default .Values.global.image.registry .Values.chaos.image.registry }}/{{ .Values.chaos.image.repository }}:{{ default .Chart.AppVersion .Values.chaos.image.tag }}
+        image: {{ default .Values.global.image.registry .Values.chaos.image.registry }}/{{ include "safeline.chaos.image.repository" . }}:{{ default .Chart.AppVersion .Values.chaos.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
 {{- if .Values.chaos.resources }}
         resources:

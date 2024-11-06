@@ -8,6 +8,8 @@ global:
   image:
     registry: swr.cn-east-3.myhuaweicloud.com/chaitin-safeline
     tag: ""
+    arch: ""
+    channel: ""
   persistence:
     storageClass: ""
 
