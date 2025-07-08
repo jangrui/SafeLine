@@ -46,6 +46,8 @@ spec:
         ports:
           - name: chaos
             containerPort: {{ template "safeline.chaos.port" . }}
+          - name: challenge
+            containerPort: {{ template "safeline.chaos.challenge.port" . }}
         volumeMounts:
           - name: localtime
             mountPath: /etc/localtime

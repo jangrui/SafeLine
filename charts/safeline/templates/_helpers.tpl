@@ -105,6 +105,16 @@ app: "{{ template "safeline.name" . }}"
 postgres://{{ template "safeline.database.username" . }}:{{ template "safeline.database.escapedRawPassword" . }}@{{ template "safeline.database.host" . }}:{{ template "safeline.database.port" . }}/{{ template "safeline.database.dbname" . }}?sslmode={{ template "safeline.database.sslmode" . }}
 {{- end -}}
 
+{{- define "safeline.database.internal.image" -}}
+{{- $repo := .Values.database.internal.image.repository -}}
+{{- $tag := .Values.database.internal.image.tag | toString -}}
+{{- if eq .Values.global.image.arch "arm" -}}
+  {{- $repo = printf "%s-arm" $repo -}}
+  {{- $tag = $tag -}}
+{{- end -}}
+{{- printf "%s:%s" $repo $tag -}}
+{{- end -}}
+
 
 {{/* logs */}}
 {{- define "safeline.logs" -}}
@@ -159,10 +169,15 @@ https://{{ template "safeline.mgt" . }}:{{ template "safeline.mgt.web.port" . }}
 
 {{- define "safeline.mgt.image" -}}
 {{- $repo := .Values.mgt.image.repository -}}
-{{- $tag := .Values.mgt.image.tag -}}
-{{- if and (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
+{{- $tag := .Values.mgt.image.tag |toString -}}
+{{- if and (eq .Values.global.image.region "en") (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
+  {{- $repo = printf "%s-g-arm-lts" $repo -}}
+  {{- $tag = "latest" -}}
+{{- else if and (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
   {{- $repo = printf "%s-arm-lts" $repo -}}
   {{- $tag = "latest" -}}
+{{- else if eq .Values.global.image.region "en" -}}
+  {{- $repo = printf "%s-g" $repo -}}
 {{- else if eq .Values.global.image.arch "arm" -}}
   {{- $repo = printf "%s-arm" $repo -}}
 {{- else if eq .Values.global.image.channel "lts" -}}
@@ -196,12 +211,21 @@ https://{{ template "safeline.mgt" . }}:{{ template "safeline.mgt.web.port" . }}
   {{ template "safeline.detector" . }}:{{ template "safeline.detector.tcd.port" . }}
 {{- end -}}
 
+{{- define "safeline.detector.snserver" -}}
+  {{ template "safeline.detector" . }}:{{ template "safeline.detector.tcd.port" . }}
+{{- end -}}
+
 {{- define "safeline.detector.image" -}}
 {{- $repo := .Values.detector.image.repository -}}
-{{- $tag := .Values.detector.image.tag -}}
-{{- if and (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
+{{- $tag := .Values.detector.image.tag |toString -}}
+{{- if and (eq .Values.global.image.region "en") (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
+  {{- $repo = printf "%s-g-arm-lts" $repo -}}
+  {{- $tag = "latest" -}}
+{{- else if and (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
   {{- $repo = printf "%s-arm-lts" $repo -}}
   {{- $tag = "latest" -}}
+{{- else if eq .Values.global.image.region "en" -}}
+  {{- $repo = printf "%s-g" $repo -}}
 {{- else if eq .Values.global.image.arch "arm" -}}
   {{- $repo = printf "%s-arm" $repo -}}
 {{- else if eq .Values.global.image.channel "lts" -}}
@@ -233,10 +257,15 @@ https://{{ template "safeline.mgt" . }}:{{ template "safeline.mgt.web.port" . }}
 
 {{- define "safeline.tengine.image" -}}
 {{- $repo := .Values.tengine.image.repository -}}
-{{- $tag := .Values.tengine.image.tag -}}
-{{- if and (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
+{{- $tag := .Values.tengine.image.tag | toString -}}
+{{- if and (eq .Values.global.image.region "en") (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
   {{- $repo = printf "%s-arm-lts" $repo -}}
   {{- $tag = "latest" -}}
+{{- else if and (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
+  {{- $repo = printf "%s-arm-lts" $repo -}}
+  {{- $tag = "latest" -}}
+{{- else if eq .Values.global.image.region "en" -}}
+  {{- $repo = printf "%s-g" $repo -}}
 {{- else if eq .Values.global.image.arch "arm" -}}
   {{- $repo = printf "%s-arm" $repo -}}
 {{- else if eq .Values.global.image.channel "lts" -}}
@@ -264,10 +293,15 @@ https://{{ template "safeline.mgt" . }}:{{ template "safeline.mgt.web.port" . }}
 
 {{- define "safeline.fvm.image" -}}
 {{- $repo := .Values.fvm.image.repository -}}
-{{- $tag := .Values.fvm.image.tag -}}
-{{- if and (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
+{{- $tag := .Values.fvm.image.tag | toString -}}
+{{- if and (eq .Values.global.image.region "en") (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
   {{- $repo = printf "%s-arm-lts" $repo -}}
   {{- $tag = "latest" -}}
+{{- else if and (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
+  {{- $repo = printf "%s-arm-lts" $repo -}}
+  {{- $tag = "latest" -}}
+{{- else if eq .Values.global.image.region "en" -}}
+  {{- $repo = printf "%s-g" $repo -}}
 {{- else if eq .Values.global.image.arch "arm" -}}
   {{- $repo = printf "%s-arm" $repo -}}
 {{- else if eq .Values.global.image.channel "lts" -}}
@@ -291,10 +325,15 @@ https://{{ template "safeline.mgt" . }}:{{ template "safeline.mgt.web.port" . }}
 
 {{- define "safeline.luigi.image" -}}
 {{- $repo := .Values.luigi.image.repository -}}
-{{- $tag := .Values.luigi.image.tag -}}
-{{- if and (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
+{{- $tag := .Values.luigi.image.tag | toString -}}
+{{- if and (eq .Values.global.image.region "en") (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
+  {{- $repo = printf "%s-g-arm-lts" $repo -}}
+  {{- $tag = "latest" -}}
+{{- else if and (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
   {{- $repo = printf "%s-arm-lts" $repo -}}
   {{- $tag = "latest" -}}
+{{- else if eq .Values.global.image.region "en" -}}
+  {{- $repo = printf "%s-g" $repo -}}
 {{- else if eq .Values.global.image.arch "arm" -}}
   {{- $repo = printf "%s-arm" $repo -}}
 {{- else if eq .Values.global.image.channel "lts" -}}
@@ -314,10 +353,15 @@ https://{{ template "safeline.mgt" . }}:{{ template "safeline.mgt.web.port" . }}
 
 {{- define "safeline.bridge.image" -}}
 {{- $repo := .Values.bridge.image.repository -}}
-{{- $tag := .Values.bridge.image.tag -}}
-{{- if and (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
+{{- $tag := .Values.bridge.image.tag | toString -}}
+{{- if and (eq .Values.global.image.region "en") (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
+  {{- $repo = printf "%s-g-arm-lts" $repo -}}
+  {{- $tag = "latest" -}}
+{{- else if and (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
   {{- $repo = printf "%s-arm-lts" $repo -}}
   {{- $tag = "latest" -}}
+{{- else if eq .Values.global.image.region "en" -}}
+  {{- $repo = printf "%s-g" $repo -}}
 {{- else if eq .Values.global.image.arch "arm" -}}
   {{- $repo = printf "%s-arm" $repo -}}
 {{- else if eq .Values.global.image.channel "lts" -}}
@@ -335,16 +379,30 @@ https://{{ template "safeline.mgt" . }}:{{ template "safeline.mgt.web.port" . }}
   {{- printf "%s-chaos" (include "safeline.fullname" .) -}}
 {{- end -}}
 
+{{- define "safeline.chaos.challenge.port" -}}
+    {{- printf "8080" -}}
+{{- end -}}
+
 {{- define "safeline.chaos.port" -}}
     {{- printf "9000" -}}
 {{- end -}}
 
+{{- define "safeline.chaos.challenge" -}}
+  {{ template "safeline.chaos" . }}:{{ template "safeline.chaos.challenge.port" . }}
+{{- end -}}
+
+
 {{- define "safeline.chaos.image" -}}
 {{- $repo := .Values.chaos.image.repository -}}
-{{- $tag := .Values.chaos.image.tag -}}
-{{- if and (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
+{{- $tag := .Values.chaos.image.tag | toString -}}
+{{- if and (eq .Values.global.image.region "en") (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
+  {{- $repo = printf "%s-g-arm-lts" $repo -}}
+  {{- $tag = "latest" -}}
+{{- else if and (eq .Values.global.image.arch "arm") (eq .Values.global.image.channel "lts") -}}
   {{- $repo = printf "%s-arm-lts" $repo -}}
   {{- $tag = "latest" -}}
+{{- else if eq .Values.global.image.region "en" -}}
+  {{- $repo = printf "%s-g" $repo -}}
 {{- else if eq .Values.global.image.arch "arm" -}}
   {{- $repo = printf "%s-arm" $repo -}}
 {{- else if eq .Values.global.image.channel "lts" -}}

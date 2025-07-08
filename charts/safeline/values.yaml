@@ -10,6 +10,7 @@ global:
     tag: ""
     arch: ""
     channel: ""
+    region: ""
   persistence:
     storageClass: ""
 

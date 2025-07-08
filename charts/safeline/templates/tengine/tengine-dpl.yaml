@@ -64,9 +64,11 @@ spec:
           - name: TCD_SNSERVER
             value: {{ template "safeline.detector.tcd" . }}
           - name: SNSERVER_ADDR
-            value: {{ template "safeline.detector.tcd" . }}
-          - name: TCD_TASK_ADDRESS
-            value: 0.0.0.0:{{ template "safeline.tengine.tcd.port" . }}
+            value: {{ template "safeline.detector.snserver" . }}
+          # - name: TCD_TASK_ADDRESS
+          #   value: 0.0.0.0:{{ template "safeline.tengine.tcd.port" . }}
+          - name: CHALLENGE_SERVER
+            value: {{ template "safeline.chaos.challenge" . }}
         volumeMounts:
           - name: localtime
             mountPath: /etc/localtime
