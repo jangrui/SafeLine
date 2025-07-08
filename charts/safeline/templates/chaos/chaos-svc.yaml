@@ -12,6 +12,9 @@ spec:
     - name: chaos
       protocol: TCP
       port: {{ template "safeline.chaos.port" . }}
+    - name: auth
+      protocol: TCP
+      port: {{ template "safeline.chaos.auth.port" . }}
     - name: challenge
       protocol: TCP
       port: {{ template "safeline.chaos.challenge.port" . }}

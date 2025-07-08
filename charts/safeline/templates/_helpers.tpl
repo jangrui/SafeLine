@@ -383,6 +383,10 @@ https://{{ template "safeline.mgt" . }}:{{ template "safeline.mgt.web.port" . }}
     {{- printf "8080" -}}
 {{- end -}}
 
+{{- define "safeline.chaos.auth.port" -}}
+    {{- printf "8088" -}}
+{{- end -}}
+
 {{- define "safeline.chaos.port" -}}
     {{- printf "9000" -}}
 {{- end -}}

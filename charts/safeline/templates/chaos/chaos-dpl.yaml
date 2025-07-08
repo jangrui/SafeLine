@@ -46,8 +46,13 @@ spec:
         ports:
           - name: chaos
             containerPort: {{ template "safeline.chaos.port" . }}
+          - name: auth
+            containerPort: {{ template "safeline.chaos.auth.port" . }}
           - name: challenge
             containerPort: {{ template "safeline.chaos.challenge.port" . }}
+        env:
+          - name: DB_ADDR
+            value: {{ template "safeline.database.url" . }}
         volumeMounts:
           - name: localtime
             mountPath: /etc/localtime

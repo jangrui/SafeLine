@@ -49,8 +49,6 @@ spec:
         env:
           - name: MGT_PG
             value: {{ template "safeline.database.url" . }}
-          - name: TCD_TASK_ADDRESS
-            value: {{ template "safeline.tengine" . }}:{{ template "safeline.tengine.tcd.port" . }}
         volumeMounts:
           - name: localtime
             mountPath: /etc/localtime
@@ -61,6 +59,8 @@ spec:
             name: sock
           - mountPath: /app/log
             name: logs
+          - mountPath: /app/run
+            name: run
         livenessProbe:
           httpGet:
             scheme: HTTPS
@@ -99,6 +99,9 @@ spec:
         - name: logs
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.persistentVolumeClaim.logs.existingClaim | default (include "safeline.logs" .) }}
+        - name: run
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.persistentVolumeClaim.run.existingClaim | default (include "safeline.run" .) }}
         {{- else -}}
         - name: mgt
           emptyDir: {}
