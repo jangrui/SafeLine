@@ -2,6 +2,29 @@ apiVersion: v1
 entries:
   safeline:
   - apiVersion: v1
+    appVersion: 8.9.0
+    created: "2025-07-08T13:01:01.426543719Z"
+    description: A free WAF that is simple enough, easy to use, and strong enough.
+      Based on the industry's leading semantic engine detection technology, it acts
+      as a reverse proxy access to protect your website from hackers.
+    digest: 407e74f3c986cfc0a7d0750e0af1fe69948c8fb36d1383e61d9716d02765d1be
+    home: https://waf-ce.chaitin.cn/
+    icon: https://waf-ce.chaitin.cn/images/403.svg
+    keywords:
+    - waf
+    - chaitin
+    - safeline
+    maintainers:
+    - email: admin@jangrui.com
+      name: Jangrui
+    name: safeline
+    sources:
+    - https://github.com/chaitin/safeline
+    - https://github.com/jangrui/safeline-helm
+    urls:
+    - https://github.com/jangrui/SafeLine/releases/download/safeline-8.9.0/safeline-8.9.0.tgz
+    version: 8.9.0
+  - apiVersion: v1
     appVersion: 8.8.2
     created: "2025-07-08T12:42:04.971660097Z"
     description: A free WAF that is simple enough, easy to use, and strong enough.
@@ -1933,4 +1956,4 @@ entries:
     urls:
     - https://github.com/jangrui/SafeLine/releases/download/3.10.1/safeline-3.10.1.tgz
     version: 3.10.1
-generated: "2025-07-08T12:42:04.972200015Z"
+generated: "2025-07-08T13:01:01.426822818Z"
