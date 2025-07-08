@@ -37,7 +37,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: chaos
-        image: {{ default .Values.global.image.registry .Values.chaos.image.registry }}/{{ include "safeline.chaos.image.repository" . }}:{{ default .Chart.AppVersion .Values.chaos.image.tag }}
+        image: {{ default .Values.global.image.registry .Values.chaos.image.registry }}/{{ include "safeline.chaos.image" . }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
 {{- if .Values.chaos.resources }}
         resources:
@@ -52,6 +52,8 @@ spec:
             readOnly: true
           - mountPath: /app/chaos
             name: chaos
+          - mountPath: /app/sock
+            name: sock
       volumes:
         - name: localtime
           hostPath:
@@ -61,8 +63,13 @@ spec:
         - name: chaos
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.persistentVolumeClaim.chaos.existingClaim | default (include "safeline.chaos" .) }}
+        - name: sock
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.persistentVolumeClaim.sock.existingClaim | default (include "safeline.sock" .) }}
         {{- else -}}
         - name: chaos
+          emptyDir: {}
+        - name: sock
           emptyDir: {}
         {{- end -}}
 

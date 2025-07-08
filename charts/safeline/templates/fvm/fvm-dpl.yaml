@@ -37,7 +37,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: fvm
-        image: {{ default .Values.global.image.registry .Values.fvm.image.registry }}/{{ include "safeline.fvm.image.repository" . }}:{{ default .Chart.AppVersion .Values.fvm.image.tag }}
+        image: {{ default .Values.global.image.registry .Values.fvm.image.registry }}/{{ include "safeline.fvm.image" . }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
           - name: api

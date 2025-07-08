@@ -37,7 +37,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: mgt
-        image: {{ default .Values.global.image.registry .Values.mgt.image.registry }}/{{ include "safeline.mgt.image.repository" . }}:{{ default .Chart.AppVersion .Values.mgt.image.tag }}
+        image: {{ default .Values.global.image.registry .Values.mgt.image.registry }}/{{ include "safeline.mgt.image" . }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
           - name: web

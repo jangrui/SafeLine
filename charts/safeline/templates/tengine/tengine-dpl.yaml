@@ -37,7 +37,7 @@ spec:
       terminationGracePeriodSeconds: 120
       initContainers:
       - name: mkdir-nginx-logs-dir
-        image: {{ default .Values.global.image.registry .Values.tengine.image.registry }}/{{ include "safeline.tengine.image.repository" . }}:{{ default .Chart.AppVersion .Values.tengine.image.tag }}
+        image: {{ default .Values.global.image.registry .Values.tengine.image.registry }}/{{ include "safeline.tengine.image" . }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command:
           - sh
@@ -49,7 +49,7 @@ spec:
             name: logs
       containers:
       - name: tengine
-        image: {{ default .Values.global.image.registry .Values.tengine.image.registry }}/{{ include "safeline.tengine.image.repository" . }}:{{ default .Chart.AppVersion .Values.tengine.image.tag }}
+        image: {{ default .Values.global.image.registry .Values.tengine.image.registry }}/{{ include "safeline.tengine.image" . }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
           - name: health

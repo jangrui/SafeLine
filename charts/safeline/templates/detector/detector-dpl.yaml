@@ -37,7 +37,7 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: detector
-        image: {{ default .Values.global.image.registry .Values.detector.image.registry }}/{{ include "safeline.detector.image.repository" . }}:{{ default .Chart.AppVersion .Values.detector.image.tag }}
+        image: {{ default .Values.global.image.registry .Values.detector.image.registry }}/{{ include "safeline.detector.image" . }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
           - name: tcd
